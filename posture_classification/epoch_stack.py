@@ -19,6 +19,8 @@ class EpochStack(ABCPostureStack):
             event_data.Time = pd.to_datetime(event_data.Time, unit='d', origin='1899-12-30')
             epochSize = 15
             windowShift = 5
+            print(event_data)
+             """ 
             #startTime = xlrd.xldate_as_datetime(event_data.Time.iloc[0], 0)
             #endTime = xlrd.xldate_as_datetime(event_data.Time.iloc[-1], 0)
             startTime = event_data.Time.iloc[0]
@@ -37,3 +39,5 @@ class EpochStack(ABCPostureStack):
                     posture_stack.iloc[i, 2] = current_epoch.ActivityCode;
                 else:
                     pass
+            
+             """ 
