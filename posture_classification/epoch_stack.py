@@ -20,7 +20,7 @@ class EpochStack(ABCPostureStack):
             epochSize = 15
             windowShift = 5
             print(event_data)
-             """ 
+            """ 
             #startTime = xlrd.xldate_as_datetime(event_data.Time.iloc[0], 0)
             #endTime = xlrd.xldate_as_datetime(event_data.Time.iloc[-1], 0)
             startTime = event_data.Time.iloc[0]
@@ -40,4 +40,4 @@ class EpochStack(ABCPostureStack):
                 else:
                     pass
             
-             """ 
+            """ 
