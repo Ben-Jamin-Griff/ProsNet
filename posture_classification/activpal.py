@@ -16,7 +16,6 @@ class Activpal(ABCActivityMonitor):
         root.withdraw()
         file_path = filedialog.askopenfilename()
         self.raw_data = file_path
-#        self.raw_data = pd.read_csv(file_path, skiprows=1, delimiter =';' )
         return print(f"Loaded file: {file_path}")
 
     def load_event_data(self):
@@ -26,5 +25,5 @@ class Activpal(ABCActivityMonitor):
         self.event_data = file_path
         return print(f"Loaded file: {file_path}")
     
-    def save(self, output, data):
-        return output.write(data)
+    def save_data(self):
+        return print('Make me work now!')

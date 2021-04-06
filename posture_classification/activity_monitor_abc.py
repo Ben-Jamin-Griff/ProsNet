@@ -8,5 +8,5 @@ class ABCActivityMonitor(ABC):
         """Required method"""
 
     @abstractmethod
-    def save(self, output, data):
+    def save_data(self):
         """Required method"""
