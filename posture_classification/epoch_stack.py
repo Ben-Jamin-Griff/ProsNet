@@ -28,12 +28,19 @@ class EpochStack(ABCPostureStack):
             for i in range(numOfEvents):
                 posture_stack.iloc[i, 0] = startTime + datetime.timedelta(0,windowShift*i)
                 posture_stack.iloc[i, 1] = posture_stack.iloc[i, 0] + datetime.timedelta(0,epochSize)
-                current_epoch = event_data[(event_data.Time >= posture_stack.iloc[i, 0]) & (event_data.Time <= posture_stack.iloc[i, 1])]
+                current_epoch_startTime = event_data.Time[(event_data.Time <= posture_stack.iloc[i, 0])].tail(1).item()
+                current_epoch_endTime = event_data.Time[(event_data.Time <= posture_stack.iloc[i, 1])].tail(1).item()
+                current_epoch = event_data[(event_data.Time >= current_epoch_startTime) & (event_data.Time <= current_epoch_endTime)]
                 if len(current_epoch.index) == 1:
                     posture_stack.iloc[i, 2] = current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)']
-                    breakpoint()
                 else:
-                    posture_stack.iloc[i, 2] = 69
                     breakpoint()
+                    # Crop the time of the first and final events
+
+                    # Work out which is the predominent event
+
+                    # Assign predominent event as the code
+                    posture_stack.iloc[i, 2] = 69
+                    # Question - how can I get pure events out instead?
             print(posture_stack)
             
