@@ -34,13 +34,19 @@ class EpochStack(ABCPostureStack):
                 if len(current_epoch.index) == 1:
                     posture_stack.iloc[i, 2] = current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)']
                 else:
-                    breakpoint()
                     # Crop the time of the first and final events
-
+                    current_epoch['Interval (s)'][0] = current_epoch['Interval (s)'][0] - ((posture_stack.iloc[i, 0] - current_epoch_startTime).total_seconds())
+                    current_epoch['Interval (s)'][-1:] = ((posture_stack.iloc[i, 1] - current_epoch_endTime).total_seconds())
                     # Work out which is the predominent event
-
+                    activity_codes = current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)'].unique()
+                    activity_codes_counter = {}
+                    for code in activity_codes:
+                        activity_code_dataframe = current_epoch[current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)'] == code]
+                        activity_code_counter_value = activity_code_dataframe['Interval (s)'].sum()
+                        activity_codes_counter[code] = activity_code_counter_value
+                    max_activity_code = max(activity_codes_counter, key=activity_codes_counter.get)
                     # Assign predominent event as the code
-                    posture_stack.iloc[i, 2] = 69
+                    posture_stack.iloc[i, 2] = max_activity_code
                     # Question - how can I get pure events out instead?
             print(posture_stack)
             
