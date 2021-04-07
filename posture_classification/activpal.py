@@ -7,9 +7,10 @@ import time
         
 class Activpal(ABCActivityMonitor):
     
-    def __init__(self, deviceType='activPAL', raw_data=None):
+    def __init__(self, deviceType='activPAL', raw_data=None, event_data=None):
         self.deviceType = deviceType
         self.raw_data = raw_data
+        self.event_data = event_data
 
     def load_raw_data(self):
         root = tk.Tk()
