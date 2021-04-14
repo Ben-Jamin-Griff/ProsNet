@@ -2,9 +2,6 @@ from processing_dataset_abc import ABCDataset
 
 import pandas as pd
 import numpy as np
-#import math
-#import datetime
-#import xlrd
 
 class EngineeringSet(ABCDataset):
     def __init__(self):
@@ -89,6 +86,11 @@ class EngineeringSet(ABCDataset):
                 # If the start time is in the dataset but the end time is not in the dataset then load in the next dataset
                 elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]:
                     print('found epoch start time but epoch end time is outside of the dataset')
+                    
+                    is_local_var = "last_epoch" in locals()
+                    if not is_local_var:
+                        last_epoch = current_epoch
+
                     #breakpoint()
                     break
                 # If the start time is greater than the last value in the dataset then load in the next dataset 
