@@ -59,6 +59,8 @@ class EngineeringSet(ABCDataset):
             # Contitions for ending things early
             if counter <= max_counter:
                 printProgressBar (counter, max_counter, 'Engineering set progress:')
+                # check the following link to work out how to make this accurate
+                #https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
                 counter += 1
             else:
                 break
@@ -85,20 +87,16 @@ class EngineeringSet(ABCDataset):
                     current_epoch = chunk[(chunk.Time >= row.Start_Time) & (chunk.Time <= row.Finish_Time)].copy()
                 # If the start time is in the dataset but the end time is not in the dataset then load in the next dataset
                 elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]:
-                    print('found epoch start time but epoch end time is outside of the dataset')
-                    
-                    is_local_var = "last_epoch" in locals()
-                    if not is_local_var:
-                        last_epoch = current_epoch
-
-                    #breakpoint()
-                    break
+                    #print('found epoch start time but epoch end time is outside of the dataset')
+                    continue
+                    #is_local_var = "last_epoch" in locals()
+                    #if not is_local_var:
+                    #    last_epoch = current_epoch
+                    #break
                 # If the start time is greater than the last value in the dataset then load in the next dataset 
                 elif row.Start_Time > chunk.Time.iloc[-1]:
-                    print('epoch start time is greater than the last value in data')
-                    #breakpoint()
-                    break
-
+                    #print('epoch start time is greater than the last value in data')
+                    continue
                 # Assign the accelerometer data to a tensor index (in numpy form, convert to tf later)
                 current_epoch_accel_data = current_epoch[['X','Y','Z']].to_numpy()
                 engineering_set = np.append(engineering_set, [current_epoch_accel_data[:295,:]], axis=0)
@@ -109,7 +107,7 @@ class EngineeringSet(ABCDataset):
         self.dataset = [engineering_set, posture_class]
         self.remove_classes()
 
-    def remove_classes(self, classes_to_remove = []):
+    def remove_classes(self, classes_to_remove = []): # This needs to be in the posture stack class
         # remove the default non pure classes
         classes_to_keep = self.dataset[1] != 99
         for classes in classes_to_remove:
@@ -121,5 +119,3 @@ class EngineeringSet(ABCDataset):
         print('...saving engineering set')
         np.save('engineering_set.npy', self.dataset[0])
         np.save('engineering_set_classes.npy', self.dataset[1])
-        # example for loading data
-        #np.load('engineering_set.npy')

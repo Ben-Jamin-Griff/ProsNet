@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     posture_stack = EpochStack()
     posture_stack.get_data(activPal)
-    posture_stack.create_stack(stack_type = 'pure', subset_of_data = 5000) # stack_type =  'mixed' & 'pure', subset_of_data = int of event dataset length or None
+    posture_stack.create_stack(stack_type = 'mixed', subset_of_data = None) # stack_type =  'mixed' & 'pure', subset_of_data = int of event dataset length or None
     posture_stack.show_stack()
 
     engineering_set = EngineeringSet()
