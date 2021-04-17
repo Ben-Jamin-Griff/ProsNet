@@ -2,28 +2,41 @@ from processing_dataset_abc import ABCDataset
 
 import pandas as pd
 import numpy as np
+import math
 
 class EngineeringSet(ABCDataset):
     def __init__(self):
         self.dataset = None
         self.raw_acceleration_data = None
         self.posture_stack = None
+        self.posture_stack_duration = None
+        self.posture_stack_epoch_type = None
 
     def show_set(self):
         print('Engineering Set')
         print('----------')
-        print('Engineering set data')
-        print(self.dataset[0])
-        print('----------')
-        print('Posture Classes')
-        print(self.dataset[1])
-        print('----------')
+        #print('Engineering set data')
+        #print(self.dataset[0])
+        #print('----------')
+        #print('Posture Classes')
+        #print(self.dataset[1])
+        #print('----------')
+        if self.posture_stack_epoch_type == 'mixed':
+            print('Extracted Set')
+            print(f" {len(self.dataset[1])} mixed epochs were extracted from {len(self.posture_stack.index)} total epochs.")
+            print('----------')
+        elif self.posture_stack_epoch_type == 'pure':
+            print('Extracted Set')
+            print(f" {len(self.dataset[1])} pure epochs were extracted from {len(self.posture_stack.index)} total epochs.")
+            print('----------')
 
     def get_data(self, activity_monitor):
         self.raw_acceleration_data = activity_monitor.raw_data
 
     def get_posture_stack(self, posture_stack):
         self.posture_stack = posture_stack.posture_stack
+        self.posture_stack_duration = posture_stack.posture_stack_duration
+        self.posture_stack_epoch_type = posture_stack.posture_stack_epoch_type
 
     def create_set(self):
         # Print iterations progress
@@ -51,20 +64,14 @@ class EngineeringSet(ABCDataset):
         # Creat empty engineering set
         engineering_set = np.empty((0,295,3), int)
         posture_class = []
-        # Load in the accelerometer data (to chunk or not to chunk?)
-        #raw_acceleration_data =  pd.read_csv(self.raw_acceleration_data, skiprows=[1],  sep=';')
-        counter = 0
-        max_counter = 99
-        for chunk in pd.read_csv(self.raw_acceleration_data, chunksize=100000):
-            # Contitions for ending things early
-            if counter <= max_counter:
-                printProgressBar (counter, max_counter, 'Engineering set progress:')
-                # check the following link to work out how to make this accurate
-                #https://stackoverflow.com/questions/845058/how-to-get-line-count-of-a-large-file-cheaply-in-python
-                counter += 1
-            else:
-                break
-
+        # Load in the accelerometer
+        raw_data_file_size = self.posture_stack_duration * 20
+        CHUNKSIZE = 100000
+        max_number_of_chunks = math.ceil(raw_data_file_size / CHUNKSIZE)
+        loaded_chunks = 0
+        printProgressBar (loaded_chunks, max_number_of_chunks, 'Engineering set progress:')
+        for chunk in pd.read_csv(self.raw_acceleration_data, chunksize=CHUNKSIZE):
+            loaded_chunks += 1
             chunk = chunk['sep=;'].apply(lambda x: pd.Series(x.split(';')))
             chunk.columns = ["Time", "Index", "X", "Y", "Z"]
             try:
@@ -86,22 +93,26 @@ class EngineeringSet(ABCDataset):
                 elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time <= chunk.Time.iloc[-1]:
                     current_epoch = chunk[(chunk.Time >= row.Start_Time) & (chunk.Time <= row.Finish_Time)].copy()
                 # If the start time is in the dataset but the end time is not in the dataset then load in the next dataset
-                elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]:
+                elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]: # <<< I'M MISSING EVENTS HERE BUT I DONT KNOW HOW TO FIX IT
                     #print('found epoch start time but epoch end time is outside of the dataset')
-                    continue
+                    break
                     #is_local_var = "last_epoch" in locals()
                     #if not is_local_var:
                     #    last_epoch = current_epoch
-                    #break
                 # If the start time is greater than the last value in the dataset then load in the next dataset 
                 elif row.Start_Time > chunk.Time.iloc[-1]:
                     #print('epoch start time is greater than the last value in data')
-                    continue
+                    break
                 # Assign the accelerometer data to a tensor index (in numpy form, convert to tf later)
                 current_epoch_accel_data = current_epoch[['X','Y','Z']].to_numpy()
                 engineering_set = np.append(engineering_set, [current_epoch_accel_data[:295,:]], axis=0)
                 # Assign the corresponding event code to a posture class list
                 posture_class.append(row.Event_Code)
+
+            printProgressBar (loaded_chunks, max_number_of_chunks, 'Engineering set progress:')
+            # Contitions for early ending chunking for cropped datasets
+            if loaded_chunks == max_number_of_chunks:
+                break
 
         posture_class = np.array(posture_class)
         self.dataset = [engineering_set, posture_class]
@@ -115,7 +126,7 @@ class EngineeringSet(ABCDataset):
         self.dataset[1] = self.dataset[1][classes_to_keep]
         self.dataset[0] = self.dataset[0][classes_to_keep]
 
-    def save_set(self):
+    def save_set(self, filename):
         print('...saving engineering set')
-        np.save('engineering_set.npy', self.dataset[0])
-        np.save('engineering_set_classes.npy', self.dataset[1])
+        np.save(filename + '_engineering_set.npy', self.dataset[0])
+        np.save(filename + '_engineering_set_classes.npy', self.dataset[1])

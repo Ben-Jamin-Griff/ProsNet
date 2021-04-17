@@ -10,6 +10,8 @@ class EpochStack(ABCPostureStack):
     def __init__(self, processing_type='epoch'):
         self.processing_type = processing_type
         self.posture_stack = None
+        self.posture_stack_duration = None
+        self.posture_stack_epoch_type = None
 
     def get_data(self, activity_monitor):
         self.events_to_process = activity_monitor.event_data
@@ -17,14 +19,18 @@ class EpochStack(ABCPostureStack):
     def show_stack(self):
         print('Posture Stack')
         print('----------')
-        print('Posture stack data')
-        print(self.posture_stack)
-        print('----------')
-        print('Unique values')
+        #print('Posture stack data')
+        #print(self.posture_stack)
+        #print('----------')
+        print('Unique class values')
         print(self.posture_stack.Event_Code.unique())
+        print('----------')
+        print('Posture stack duration')
+        print(f"The posture stacks contains {self.posture_stack_duration} seconds of data.")
         print('----------')
 
     def create_stack(self, stack_type, subset_of_data = None):
+        self.posture_stack_epoch_type = stack_type
         # Print iterations progress
         def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
             """
@@ -51,20 +57,20 @@ class EpochStack(ABCPostureStack):
             event_data = pd.read_csv(self.events_to_process)
             # subset of data for testing
             if subset_of_data:
-                print(f'Using subset of data with {subset_of_data} events')
+                print(f'Using subset of data with just over {subset_of_data} events')
                 event_data = event_data.iloc[:subset_of_data]
             event_data.Time = pd.to_datetime(event_data.Time, unit='d', origin='1899-12-30')
             epochSize = 15
             windowShift = 5
             startTime = event_data.Time.iloc[0]
             endTime = event_data.Time.iloc[-1]
-            totalTime = (endTime - startTime).total_seconds()
+            totalTime = ((endTime - startTime).total_seconds()) + event_data['Interval (s)'].iloc[-1]
+            self.posture_stack_duration = totalTime
             numOfEvents = math.ceil(totalTime / windowShift)
             column_names = ['Start_Time', 'Finish_Time', 'Event_Code']
             posture_stack = pd.DataFrame(0, index=np.arange(numOfEvents), columns=column_names)
             for i in range(numOfEvents):
-                printProgressBar (i, numOfEvents, 'Creating posture stack progress:')
-
+                printProgressBar (i+1, numOfEvents, 'Creating posture stack progress:')
                 posture_stack.iloc[i, 0] = startTime + datetime.timedelta(0,windowShift*i)
                 posture_stack.iloc[i, 1] = posture_stack.iloc[i, 0] + datetime.timedelta(0,epochSize)
                 current_epoch_startTime = event_data.Time[(event_data.Time <= posture_stack.iloc[i, 0])].tail(1).item()
