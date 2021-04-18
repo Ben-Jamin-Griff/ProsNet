@@ -18,7 +18,7 @@ if __name__ == '__main__':
     engineering_set.get_posture_stack(posture_stack)
     engineering_set.create_set()
     engineering_set.show_set()
-    engineering_set.save_set('3_mixed_test')
+    engineering_set.save_set('1_mixed')
 
     posture_stack2 = EpochStack()
     posture_stack2.get_data(activPal)
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     engineering_set2.get_posture_stack(posture_stack2)
     engineering_set2.create_set()
     engineering_set2.show_set()
-    engineering_set2.save_set('3_pure_test')
+    engineering_set2.save_set('1_pure')
