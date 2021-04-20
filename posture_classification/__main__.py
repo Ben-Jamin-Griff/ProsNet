@@ -18,16 +18,4 @@ if __name__ == '__main__':
     engineering_set.get_posture_stack(posture_stack)
     engineering_set.create_set()
     engineering_set.show_set()
-    engineering_set.save_set('3_mixed')
-
-    posture_stack2 = EpochStack()
-    posture_stack2.get_data(activPal)
-    posture_stack2.create_stack(stack_type = 'pure', subset_of_data = None) # stack_type =  'mixed' & 'pure', subset_of_data = int of event dataset length or None
-    posture_stack2.show_stack()
-
-    engineering_set2 = EngineeringSet()
-    engineering_set2.get_data(activPal)
-    engineering_set2.get_posture_stack(posture_stack2)
-    engineering_set2.create_set()
-    engineering_set2.show_set()
-    engineering_set2.save_set('3_pure')
+    engineering_set.save_set('test')
