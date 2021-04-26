@@ -66,7 +66,7 @@ class EngineeringSet(ABCDataset):
         posture_class = []
         # Load in the accelerometer
         raw_data_file_size = self.posture_stack_duration * 20
-        CHUNKSIZE = 100000
+        CHUNKSIZE = 300000
         max_number_of_chunks = math.ceil(raw_data_file_size / CHUNKSIZE)
         loaded_chunks = 0
         printProgressBar (loaded_chunks, max_number_of_chunks, 'Engineering set progress:')

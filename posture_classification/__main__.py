@@ -1,12 +1,18 @@
 from activpal import Activpal
 from epoch_stack import EpochStack
 from engineering_set import EngineeringSet
+from deep_model import DeepModel
 
 if __name__ == '__main__':
-    #
+
     activPal = Activpal()
     activPal.load_raw_data()
     activPal.load_event_data()
+
+    #Testing ML model
+    ml_model = DeepModel()
+    ml_model.get_data(activPal)
+    breakpoint()
 
     posture_stack = EpochStack()
     posture_stack.get_data(activPal)
@@ -19,3 +25,12 @@ if __name__ == '__main__':
     engineering_set.create_set()
     engineering_set.show_set()
     engineering_set.save_set('test')
+    #engineering_set.load_set('test')
+
+    ml_model = DeepModel()
+    ml_model.load_model('my_model.ht5')
+    ml_model.get_data()
+    ml_model.predict_postures()
+    ml_model.save_results
+    
+

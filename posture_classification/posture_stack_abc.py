@@ -10,7 +10,3 @@ class ABCPostureStack(ABC):
     @abstractmethod
     def create_stack(self, stack_type):
         """Required method"""
-
-#    @abstractproperty
-#    def posture_stack(self):
-#        """Required property"""
