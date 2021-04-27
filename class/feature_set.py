@@ -3,16 +3,16 @@ from dataset import Dataset
 import pandas as pd
 import numpy as np
 import math
+from scipy import signal
 
-class EngineeringSet(Dataset):
+class FeatureSet(Dataset):
     def __init__(self):
         super().__init__()
 
     def create_set(self):
-        # Creat empty engineering set
-        engineering_set = np.empty((0,295,3), int)
+        feature_set = np.empty((0,295,3), int)
         posture_class = []
-        # Load in the accelerometer
+
         raw_data_file_size = self.posture_stack_duration * 20
         CHUNKSIZE = 300000
         max_number_of_chunks = math.ceil(raw_data_file_size / CHUNKSIZE)
@@ -35,25 +35,65 @@ class EngineeringSet(Dataset):
             for index, row in self.posture_stack.iterrows():
                 # If the epoch start time is less than the first value in data then look at next epoch
                 if row.Start_Time < chunk.Time.iloc[0]:
-                    #print('epoch start time is less than the first value in data')
                     continue
                 # If the epoch start time is in the dataset and the end time is in the dataset then extract the data
                 elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time <= chunk.Time.iloc[-1]:
                     current_epoch = chunk[(chunk.Time >= row.Start_Time) & (chunk.Time <= row.Finish_Time)].copy()
                 # If the start time is in the dataset but the end time is not in the dataset then load in the next dataset
-                elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]: # <<< I'M MISSING EVENTS HERE BUT I DONT KNOW HOW TO FIX IT
-                    #print('found epoch start time but epoch end time is outside of the dataset')
+                elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]:
                     break
-                    #is_local_var = "last_epoch" in locals()
-                    #if not is_local_var:
-                    #    last_epoch = current_epoch
                 # If the start time is greater than the last value in the dataset then load in the next dataset 
                 elif row.Start_Time > chunk.Time.iloc[-1]:
-                    #print('epoch start time is greater than the last value in data')
                     break
+
                 # Assign the accelerometer data to a tensor index (in numpy form, convert to tf later)
-                current_epoch_accel_data = current_epoch[['X','Y','Z']].to_numpy()
-                engineering_set = np.append(engineering_set, [current_epoch_accel_data[:295,:]], axis=0)
+                #current_epoch_accel_data = current_epoch[['X','Y','Z']].to_numpy()
+                xData = current_epoch['X'].to_numpy()
+                yData = current_epoch['Y'].to_numpy()
+                zData = current_epoch['Z'].to_numpy()
+
+                # Filter the data
+                fc = 30  # Cut-off frequency of the filter
+                w = fc / (20 / 2) # Normalize the frequency
+                b, a = signal.butter(5, w, 'low')
+                xDataFilt = signal.filtfilt(b, a, xData)
+                yDataFilt = signal.filtfilt(b, a, yData)
+                zDataFilt = signal.filtfilt(b, a, zData)
+
+                # Calculate vector magnitude
+                vmData = math.sqrt(xDataFilt**2 + yDataFilt**2 + zDataFilt**2)
+                
+                # Calculate jerk
+                xJerkData = scipy.misc.derivative(xDataFilt)
+                yJerkData = scipy.misc.derivative(yDataFilt)
+                zJerkData = scipy.misc.derivative(zDataFilt)
+
+                # Average value in signal buffer for all three acceleration components (1 each)
+
+                # Standard deviation
+
+                # Median absolute deviation
+
+                # Maximum sample
+
+                # Minimum sample
+
+                # Signal magnitude area
+
+                # Signal magnitude area jerk
+
+                # Energy measure
+
+                # Inter-quartile range
+
+                # Autocorrelation features for all three acceleration components (3 each): 
+                # height of main peak; height and position of second peak
+
+                # Spectral peak features (12 each): height and position of first 6 peaks
+
+                # Spectral power features (5 each): total power in 5 adjacent
+                # and pre-defined frequency bands
+
                 # Assign the corresponding event code to a posture class list
                 posture_class.append(row.Event_Code)
 
@@ -63,5 +103,5 @@ class EngineeringSet(Dataset):
                 break
 
         posture_class = np.array(posture_class)
-        self.dataset = [engineering_set, posture_class]
+        self.dataset = [feature_set, posture_class]
         self.remove_classes()

@@ -12,7 +12,7 @@ class ABCDataset(ABC):
         """Required method"""
 
     @abstractmethod
-    def create_set(self):
+    def show_set(self):
         """Required method"""
 
     @abstractmethod

@@ -1,12 +1,12 @@
 from posture_stack_abc import ABCPostureStack
+from process import Process
 
 import pandas as pd
 import numpy as np
 import math
 import datetime
-#import xlrd
 
-class EpochStack(ABCPostureStack):
+class EpochStack(ABCPostureStack, Process):
     def __init__(self, processing_type='epoch'):
         self.processing_type = processing_type
         self.posture_stack = None
@@ -19,9 +19,6 @@ class EpochStack(ABCPostureStack):
     def show_stack(self):
         print('Posture Stack')
         print('----------')
-        #print('Posture stack data')
-        #print(self.posture_stack)
-        #print('----------')
         print('Unique class values')
         print(self.posture_stack.Event_Code.unique())
         print('----------')
@@ -31,28 +28,6 @@ class EpochStack(ABCPostureStack):
 
     def create_stack(self, stack_type, subset_of_data = None):
         self.posture_stack_epoch_type = stack_type
-        # Print iterations progress
-        def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
-            """
-            Call in a loop to create terminal progress bar
-            @params:
-                iteration   - Required  : current iteration (Int)
-                total       - Required  : total iterations (Int)
-                prefix      - Optional  : prefix string (Str)
-                suffix      - Optional  : suffix string (Str)
-                decimals    - Optional  : positive number of decimals in percent complete (Int)
-                length      - Optional  : character length of bar (Int)
-                fill        - Optional  : bar fill character (Str)
-                printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-            """
-            percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-            filledLength = int(length * iteration // total)
-            bar = fill * filledLength + '-' * (length - filledLength)
-            print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
-            # Print New Line on Complete
-            if iteration == total: 
-                print()
-
         if self.processing_type == 'epoch':
             event_data = pd.read_csv(self.events_to_process)
             # subset of data for testing
@@ -70,7 +45,7 @@ class EpochStack(ABCPostureStack):
             column_names = ['Start_Time', 'Finish_Time', 'Event_Code']
             posture_stack = pd.DataFrame(0, index=np.arange(numOfEvents), columns=column_names)
             for i in range(numOfEvents):
-                printProgressBar (i+1, numOfEvents, 'Creating posture stack progress:')
+                self.print_progress_bar(i+1, numOfEvents, 'Creating posture stack progress:')
                 posture_stack.iloc[i, 0] = startTime + datetime.timedelta(0,windowShift*i)
                 posture_stack.iloc[i, 1] = posture_stack.iloc[i, 0] + datetime.timedelta(0,epochSize)
                 current_epoch_startTime = event_data.Time[(event_data.Time <= posture_stack.iloc[i, 0])].tail(1).item()
@@ -103,5 +78,3 @@ class EpochStack(ABCPostureStack):
                         else:
                             posture_stack.iloc[i, 2] = 99
             self.posture_stack = posture_stack
-            
-
