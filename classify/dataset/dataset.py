@@ -1,4 +1,4 @@
-from dataset_abc import ABCDataset
+from dataset.dataset_abc import ABCDataset
 from process import Process
 
 import pandas as pd
@@ -6,7 +6,8 @@ import numpy as np
 import math
 
 class Dataset(ABCDataset, Process):
-    def __init__(self):
+    def __init__(self, processing_type='epoch'):
+        self.processing_type = processing_type
         self.dataset = None
         self.raw_acceleration_data = None
         self.posture_stack = None
@@ -24,11 +25,16 @@ class Dataset(ABCDataset, Process):
             print('Extracted Set')
             print(f" {len(self.dataset[1])} pure epochs were extracted from {len(self.posture_stack.index)} total epochs.")
             print('----------')
+        else:
+            print('Extracted Set')
+            print(f" {len(self.dataset[0])} pure epochs were extracted.")
+            print('----------')
 
     def get_data(self, activity_monitor):
         self.raw_acceleration_data = activity_monitor.raw_data
 
     def get_posture_stack(self, posture_stack):
+        self.processing_type = posture_stack.processing_type
         self.posture_stack = posture_stack.posture_stack
         self.posture_stack_duration = posture_stack.posture_stack_duration
         self.posture_stack_epoch_type = posture_stack.posture_stack_epoch_type

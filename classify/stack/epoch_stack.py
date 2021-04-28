@@ -1,4 +1,4 @@
-from posture_stack_abc import ABCPostureStack
+from stack.posture_stack_abc import ABCPostureStack
 from process import Process
 
 import pandas as pd
@@ -27,6 +27,10 @@ class EpochStack(ABCPostureStack, Process):
         print('----------')
 
     def create_stack(self, stack_type, subset_of_data = None):
+        """
+        stack_type = 'mixed' or 'pure'
+        subset_of_data = int number of events or None
+        """
         self.posture_stack_epoch_type = stack_type
         if self.processing_type == 'epoch':
             event_data = pd.read_csv(self.events_to_process)

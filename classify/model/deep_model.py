@@ -1,4 +1,4 @@
-from model_abc import ABCModel
+from model.model_abc import ABCModel
 
 import tkinter as tk
 from tkinter import filedialog
@@ -14,14 +14,14 @@ import sklearn.metrics as metrics
 class DeepModel(ABCModel):
     def __init__(self):
         self.model = None
-        self.data_to_analyse = None
+        self.dataset = None
         self.predictions = None
 
     def show_set(self):
         print('Engineering Set')
         print('----------')
         print('Extracted Set')
-        print(f"{self.data_to_analyse.shape[0]} epochs were extracted for classification.")
+        print(f"{self.dataset.shape[0]} epochs / events were extracted for classification.")
         print('----------')
 
     def show_predictions(self):
@@ -33,76 +33,18 @@ class DeepModel(ABCModel):
             print(f"Class {classy} has {count} predictions")
         print('----------')
 
-
     def load_model(self):
         root = tk.Tk()
         root.withdraw()
-        file_path = filedialog.askopenfilename()
+        file_path = filedialog.askopenfilename(title = "Load model")
         self.model = tf.keras.models.load_model(file_path)
         print(f"Loaded model: {file_path}")
         self.model.summary()
         print('----------')
 
-    def get_data(self, data_holder):
-        def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
-            """
-            Call in a loop to create terminal progress bar
-            @params:
-                iteration   - Required  : current iteration (Int)
-                total       - Required  : total iterations (Int)
-                prefix      - Optional  : prefix string (Str)
-                suffix      - Optional  : suffix string (Str)
-                decimals    - Optional  : positive number of decimals in percent complete (Int)
-                length      - Optional  : character length of bar (Int)
-                fill        - Optional  : bar fill character (Str)
-                printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-            """
-            percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-            filledLength = int(length * iteration // total)
-            bar = fill * filledLength + '-' * (length - filledLength)
-            print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
-            # Print New Line on Complete
-            if iteration == total: 
-                print()
-
-        try:
-            self.data_to_analyse = data_holder.dataset
-        except:
-            filename = data_holder.raw_data
-            # Creat empty engineering set
-            engineering_set = np.empty((0,295,3), int)
-            CHUNKSIZE = 300000
-            loaded_chunks = 0
-            #max_number_of_chunks = 100000
-            #printProgressBar (loaded_chunks, max_number_of_chunks, 'Engineering set progress:')
-            print(f"Loaded chunk: {loaded_chunks}")
-            for chunk in pd.read_csv(filename, chunksize=CHUNKSIZE):
-                loaded_chunks += 1
-                chunk = chunk['sep=;'].apply(lambda x: pd.Series(x.split(';')))
-                chunk.columns = ["Time", "Index", "X", "Y", "Z"]
-                try:
-                    chunk = chunk.apply(pd.to_numeric)
-                    chunk = chunk.reset_index(drop=True)
-                    chunk.Time = pd.to_datetime(chunk.Time, unit='d', origin='1899-12-30')
-                except:
-                    chunk = chunk.iloc[1:,]
-                    chunk = chunk.apply(pd.to_numeric)
-                    chunk = chunk.reset_index(drop=True)
-                    chunk.Time = pd.to_datetime(chunk.Time, unit='d', origin='1899-12-30')
-
-                epochSize = 15
-                numOfEpochs = (CHUNKSIZE / epochSize)
-                for i in range(int(numOfEpochs)):
-                    current_epoch = chunk.iloc[(15*20)*i:(15*20)*(i+1):,:].copy()
-                    current_epoch_accel_data = current_epoch[['X','Y','Z']].to_numpy()
-                    # Break if the last epoch is too small
-                    if current_epoch_accel_data.shape[0] < 300:
-                        break
-                    engineering_set = np.append(engineering_set, [current_epoch_accel_data[:295,:]], axis=0)
-                #printProgressBar (loaded_chunks, max_number_of_chunks, 'Engineering set progress:')
-                print(f"Loaded chunk: {loaded_chunks}")
-        self.data_to_analyse = engineering_set
-
+    def get_data(self, set):
+        self.dataset = set.dataset[0]
+            
     def reassign_classes(classes):
         for count, value in enumerate(classes):
             if classes[count] == 2.1:
@@ -124,10 +66,10 @@ class DeepModel(ABCModel):
         return dataset, stack
 
     def reshape_set(self, new_shape):
-        shaper = self.data_to_analyse.shape
+        shaper = self.dataset.shape
         new_shape.insert(0, shaper[0])
         new_shape = tuple(new_shape)
-        self.data_to_analyse = self.data_to_analyse.reshape(new_shape)
+        self.dataset = self.dataset.reshape(new_shape)
 
     def one_hot_postures(stack):
         unique_classes = np.unique(stack)
@@ -164,14 +106,14 @@ class DeepModel(ABCModel):
     def process_epochs(self, shuffle=False):
         print("Processing epochs...")
         # Normalize the acceleration data
-        self.data_to_analyse = self.norm_accel_data(self.data_to_analyse)
+        self.dataset = self.norm_accel_data(self.dataset)
         # Convert data to a tensor
-        self.data_to_analyse = tf.constant(self.data_to_analyse)
+        self.dataset = tf.constant(self.dataset)
         # If the data is a training dataset, we shuffle it
         if shuffle:
             indices = tf.range(start=0, limit=tf.shape(data)[0], dtype=tf.int32)
             shuffled_indices = tf.random.shuffle(indices)
-            shuffled_x = tf.gather(self.data_to_analyse, shuffled_indices)
+            shuffled_x = tf.gather(self.dataset, shuffled_indices)
             #shuffled_y = tf.gather(y, shuffled_indices)
             return
 
@@ -239,6 +181,10 @@ class DeepModel(ABCModel):
         model_to_train.save(filename)
 
     def make_prediction(self):
-        predictions_probabilities = self.model.predict(self.data_to_analyse)
+        predictions_probabilities = self.model.predict(self.dataset)
         predictions = np.argmax(predictions_probabilities, axis=1)
         self.predictions = predictions
+
+    def save_predictions(self, filename):
+        # Make a df... That might be a better way of creating a table to save to CSV
+        np.savetxt(filename + '_predictions.csv', self.predictions, delimiter=',', fmt='%d' , header='ActivityCodes (0=sedentary 1=standing 2=stepping 3=lying')
