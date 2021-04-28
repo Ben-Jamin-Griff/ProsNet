@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 class Process():
     def __init__(self):
         pass
@@ -22,3 +24,12 @@ class Process():
             # Print New Line on Complete
             if iteration == total: 
                 print()
+
+    def plot_signal(self, array, title):
+        plt.plot(array, c = 'hotpink')
+        plt.title(title)
+        plt.ion()
+        plt.show()
+        plt.draw()
+        plt.pause(0.001)
+        input("Press [enter] to continue.")
