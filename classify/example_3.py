@@ -15,7 +15,7 @@ activPal.load_event_data()
 
 posture_stack = EpochStack()
 posture_stack.get_data(activPal)
-posture_stack.create_stack(stack_type = 'pure')
+posture_stack.create_stack(stack_type = 'mixed')
 posture_stack.show_stack()
 
 engineering_set = EngineeringSet()

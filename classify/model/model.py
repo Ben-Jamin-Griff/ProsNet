@@ -4,7 +4,6 @@ import tkinter as tk
 from tkinter import filedialog
 import pandas as pd
 import numpy as np
-import tensorflow as tf
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
@@ -68,16 +67,24 @@ class Model(ABCModel):
                 continue
         return classes
 
+    def balance_classes(self):
+        pass
+        #sedData = data.loc[data.EventCode == 0]
+        #shapeSed = sedData.shape[0]
+        #standData = data.loc[data.EventCode == 1]
+        #shapeStand = standData.shape[0]
+        #stepData = data.loc[data.EventCode == 2]
+        #shapeSteps = stepData.shape[0]
+        #smallestClass = min([shapeSed, shapeStand, shapeSteps])
+        #newSedData = sedData.sample(smallestClass)
+        #newStandData = standData.sample(smallestClass)
+        #newStepData = stepData.sample(smallestClass)
+        #newDataFrame = pd.concat([newSedData, newStandData, newStepData], axis=0)
+
     def remove_classes(self, class_to_remove):
         keep_idx = self.postures != class_to_remove
         self.postures = self.postures[keep_idx]
         self.dataset = self.dataset[keep_idx]
-
-    def reshape_set(self, new_shape):
-        shaper = self.dataset.shape
-        new_shape.insert(0, shaper[0])
-        new_shape = tuple(new_shape)
-        self.dataset = self.dataset.reshape(new_shape)
 
     def one_hot_postures(self):
         unique_classes = np.unique(self.postures)
@@ -103,15 +110,6 @@ class Model(ABCModel):
         print(count_class_values_test)
         print('--------------')
         return unique_classes_train, unique_classes_test
-
-    def norm_accel_data(self):
-        x_minimum = 0
-        x_maximum = 255
-        self.dataset = ((self.dataset - x_minimum) / (x_maximum - x_minimum))
-
-    def process_epochs(self):
-        self.norm_accel_data()
-        self.dataset = tf.constant(self.dataset)
         
     def show_confusion_matrix(self):
         matrix = metrics.confusion_matrix(self.postures.astype(int), self.predictions.astype(int), normalize ='true')
@@ -139,26 +137,6 @@ class Model(ABCModel):
         self.show_confusion_matrix()
         print('------------')
         print(classification_report(self.postures.astype(int), self.predictions.astype(int)))
-
-    def train_and_save_model(model_to_train, X_train, y_train, model_name):
-        callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=3)
-        # Hyper-parameters
-        EPOCHS = 50
-        model_to_train.compile(loss='categorical_crossentropy',
-                    optimizer='adam', 
-                    metrics=['accuracy'])
-
-        history = model_to_train.fit(X_train,
-                        y_train,
-                        epochs=EPOCHS,
-                        validation_split=0.2,
-                        batch_size=32,
-                        #callbacks=[callback],
-                        verbose=1)
-        show_training(history)
-        filename  = './models/' + model_name + '.h5'
-        # save the model
-        model_to_train.save(filename)
 
     def make_prediction(self):
         predictions_probabilities = self.model.predict(self.dataset)

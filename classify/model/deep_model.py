@@ -12,6 +12,21 @@ class DeepModel(Model):
     def __init__(self):
         super().__init__()
 
+    def norm_accel_data(self):
+        x_minimum = 0
+        x_maximum = 255
+        self.dataset = ((self.dataset - x_minimum) / (x_maximum - x_minimum))
+
+    def reshape_set(self, new_shape):
+        shaper = self.dataset.shape
+        new_shape.insert(0, shaper[0])
+        new_shape = tuple(new_shape)
+        self.dataset = self.dataset.reshape(new_shape)
+
+    def process_epochs(self):
+        self.norm_accel_data()
+        self.dataset = tf.constant(self.dataset)
+
     def show_training(history):
         # summarize history for accuracy
         plt.figure(figsize=(10, 4))
