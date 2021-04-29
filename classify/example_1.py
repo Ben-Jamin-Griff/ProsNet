@@ -4,6 +4,8 @@ from dataset.engineering_set import EngineeringSet
 from model.deep_model import DeepModel
 
 """
+Creating a deep training set
+
 This script provides an example of how to load in data from an activPAL, create a posture stack using the thigh events and create an engineering set from the raw acceleration data and corresponding posture stack codes. This data is saved as a numpy file that can be loaded into one of the notebooks for developing a model. 
 """
 

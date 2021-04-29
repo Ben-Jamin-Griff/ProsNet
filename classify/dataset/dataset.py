@@ -54,5 +54,6 @@ class Dataset(ABCDataset, Process):
 
     def load_set(self, filename):
         print('...loading engineering set')
-        self.dataset[0] = np.load(filename + '_engineering_set.npy')
-        self.dataset[1] = np.load(filename + '_engineering_set_classes.npy')
+        engineering_set = np.load(filename + '_engineering_set.npy')
+        posture_set = np.load(filename + '_engineering_set_classes.npy')
+        self.dataset = [engineering_set, posture_set]

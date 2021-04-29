@@ -4,6 +4,8 @@ from dataset.engineering_set import EngineeringSet
 from model.deep_model import DeepModel
 
 """
+Make deep predictions
+
 This script provides an example of how to load in data from an activPAL, create an engineering set from the raw acceleration data, make predictions on the set using a pretrained model and saves the predictions to a CSV.
 """
 
