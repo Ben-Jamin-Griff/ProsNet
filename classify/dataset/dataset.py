@@ -1,11 +1,11 @@
 from dataset.dataset_abc import ABCDataset
-from process import Process
+from helper import Helper
 
 import pandas as pd
 import numpy as np
 import math
 
-class Dataset(ABCDataset, Process):
+class Dataset(ABCDataset, Helper):
     def __init__(self, processing_type='epoch'):
         self.processing_type = processing_type
         self.dataset = None
@@ -13,6 +13,7 @@ class Dataset(ABCDataset, Process):
         self.posture_stack = None
         self.posture_stack_duration = None
         self.posture_stack_epoch_type = None
+        self.posture_stack_start_time = None
 
     def show_set(self):
         print('Engineering Set')
@@ -38,6 +39,7 @@ class Dataset(ABCDataset, Process):
         self.posture_stack = posture_stack.posture_stack
         self.posture_stack_duration = posture_stack.posture_stack_duration
         self.posture_stack_epoch_type = posture_stack.posture_stack_epoch_type
+        self.posture_stack_start_time = posture_stack.posture_stack_start_time
 
     def remove_classes(self, classes_to_remove = []):
         # remove the default non pure classes

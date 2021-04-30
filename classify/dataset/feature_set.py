@@ -1,11 +1,12 @@
 from dataset.dataset import Dataset
+from plotter import Plotter
 
 import pandas as pd
 import numpy as np
 import math
 from scipy import signal, misc, stats
 
-class FeatureSet(Dataset):
+class FeatureSet(Dataset, Plotter):
     def __init__(self):
         super().__init__()
 

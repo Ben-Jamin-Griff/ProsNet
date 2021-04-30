@@ -1,4 +1,5 @@
 from model.model_abc import ABCModel
+from plotter import Plotter
 
 import tkinter as tk
 from tkinter import filedialog
@@ -9,13 +10,16 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import sklearn.metrics as metrics
+import tensorflow as tf
 
-class Model(ABCModel):
+class Model(ABCModel, Plotter):
     def __init__(self):
+        super().__init__()
         self.model = None
         self.dataset = None
         self.predictions = None
         self.postures = None
+        self.posture_stack_start_time = None
         self.one_hot_postures = None
 
     def show_set(self):
@@ -52,20 +56,20 @@ class Model(ABCModel):
 
     def get_postures(self, set):
         self.postures = set.dataset[1]
+        self.posture_stack_start_time = set.posture_stack_start_time
             
-    def reassign_classes(classes):
-        for count, value in enumerate(classes):
-            if classes[count] == 2.1:
-                classes[count] = 2
-            elif classes[count] == 3.1:
-                classes[count] = 3
-            elif classes[count] == 3.2:
-                classes[count] = 3
-            elif classes[count] == 5.0:
-                classes[count] = 0
+    def reassign_classes(self):
+        for count, value in enumerate(self.postures):
+            if self.postures[count] == 2.1:
+                self.postures[count] = 2
+            elif self.postures[count] == 3.1:
+                self.postures[count] = 3
+            elif self.postures[count] == 3.2:
+                self.postures[count] = 3
+            elif self.postures[count] == 5.0:
+                self.postures[count] = 0
             else:
                 continue
-        return classes
 
     def balance_classes(self):
         pass

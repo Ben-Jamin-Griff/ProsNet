@@ -1,17 +1,18 @@
 from stack.posture_stack_abc import ABCPostureStack
-from process import Process
+from helper import Helper
 
 import pandas as pd
 import numpy as np
 import math
 import datetime
 
-class EpochStack(ABCPostureStack, Process):
+class EpochStack(ABCPostureStack, Helper):
     def __init__(self, processing_type='epoch'):
         self.processing_type = processing_type
         self.posture_stack = None
         self.posture_stack_duration = None
         self.posture_stack_epoch_type = None
+        self.posture_stack_start_time = None
 
     def get_data(self, activity_monitor):
         self.events_to_process = activity_monitor.event_data
@@ -42,6 +43,7 @@ class EpochStack(ABCPostureStack, Process):
             epochSize = 15
             windowShift = 5
             startTime = event_data.Time.iloc[0]
+            self.posture_stack_start_time = startTime
             endTime = event_data.Time.iloc[-1]
             totalTime = ((endTime - startTime).total_seconds()) + event_data['Interval (s)'].iloc[-1]
             self.posture_stack_duration = totalTime
