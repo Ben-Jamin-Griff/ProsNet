@@ -21,5 +21,51 @@ class ShallowModel(Model):
     def __init__(self):
         super().__init__()
 
-    def do_something(self):
-        pass
+    def create_model(self, type_of_model):
+        if type_of_model == 'knn':
+            X_train, X_test, y_train, y_test = train_test_split(self.dataset, self.postures, test_size=0.2, random_state=42)
+            LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
+            unique_classes_train, unique_classes_test = self.review_class_imbalance(y_train, y_test, LABELS)
+            n_neighbors = 10
+            random_state = 42
+
+            #dim = self.dataset.shape[0]
+            #n_classes = len(np.unique(self.postures))
+
+            pipeline = make_pipeline(Normalizer(), LinearDiscriminantAnalysis(n_components=2))
+            knn = KNeighborsClassifier(n_neighbors=n_neighbors)
+            pipeline.fit(X_train, y_train)
+            knn.fit(pipeline.transform(X_train), y_train)
+
+            acc_knn = knn.score(pipeline.transform(X_test), y_test)
+
+            X_embedded = pipeline.transform(self.dataset)
+            fig, ax = plt.subplots()
+            scatter = ax.scatter(X_embedded[:, 0], X_embedded[:, 1], c=self.postures, s=30, cmap='Set1')
+            ax.set_title("{}, {}, KNN (k={})\nTest accuracy = {:.2f}".format('Example Set',
+                                                                            'Normalized',
+                                                                            n_neighbors,
+                                                                            acc_knn));
+            # produce a legend with the unique colors from the scatter
+            legend1 = ax.legend(*scatter.legend_elements(),
+                                loc="upper left", title="Classes")
+                    
+            ax.add_artist(legend1)
+            
+            ### For making predictions
+            ####knn.predict(pipeline.transform(feature_set))
+
+            disp = plot_confusion_matrix(knn, pipeline.transform(X_test), y_test,
+                                        #display_labels=LABELS,
+                                        cmap=plt.cm.Blues,
+                                        normalize='true');
+
+            plt.grid(False)
+            plt.ion()
+            plt.show()
+            plt.draw()
+            plt.pause(0.001)
+            input("Press [enter] to continue.")
+
+        self.model = knn
+        self.pipeline = pipeline

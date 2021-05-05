@@ -6,7 +6,7 @@ from model.deep_model import DeepModel
 """
 Validate deep predictions
 
-This script provides an example of how to load in data from an activPAL, create a posture stack using the thigh events, create an engineering set from the raw acceleration data and corresponding posture classification codes, make predictions using a pretrained model, compares the predictions to the posture stack and saves the predictions to a CSV. 
+This script provides an example of how to load in data from an activPAL, create a posture stack using the thigh events, create an engineering set from the raw acceleration data and corresponding posture classification codes, make predictions using a pretrained model, compares the predictions to the posture stack and saves the predictions to a CSV.
 """
 
 activPal = Activpal()

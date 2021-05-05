@@ -49,13 +49,13 @@ class Dataset(ABCDataset, Helper):
         self.dataset[1] = self.dataset[1][classes_to_keep]
         self.dataset[0] = self.dataset[0][classes_to_keep]
 
-    def save_set(self, filename):
-        print('...saving engineering set')
-        np.save(filename + '_engineering_set.npy', self.dataset[0])
-        np.save(filename + '_engineering_set_classes.npy', self.dataset[1])
+    def save_set(self, filename, type_of_set):
+        print('...saving set')
+        np.save(filename + '_' + type_of_set + '_set.npy', self.dataset[0])
+        np.save(filename + '_' + type_of_set + '_set_classes.npy', self.dataset[1])
 
-    def load_set(self, filename):
-        print('...loading engineering set')
-        engineering_set = np.load(filename + '_engineering_set.npy')
-        posture_set = np.load(filename + '_engineering_set_classes.npy')
+    def load_set(self, filename, type_of_set):
+        print('...loading set')
+        engineering_set = np.load(filename + '_' + type_of_set + '_set.npy')
+        posture_set = np.load(filename + '_' + type_of_set + '_set_classes.npy')
         self.dataset = [engineering_set, posture_set]

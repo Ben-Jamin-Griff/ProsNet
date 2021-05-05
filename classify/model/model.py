@@ -16,6 +16,7 @@ class Model(ABCModel, Plotter):
     def __init__(self):
         super().__init__()
         self.model = None
+        self.pipeline = None
         self.dataset = None
         self.predictions = None
         self.postures = None
@@ -94,7 +95,7 @@ class Model(ABCModel, Plotter):
         unique_classes = np.unique(self.postures)
         self.one_hot_postures = tf.one_hot(self.postures, len(unique_classes))
 
-    def review_class_imbalance(y_train, y_test, labels=None):
+    def review_class_imbalance(self, y_train, y_test, labels=None):
         # Find the unique label values...
         unique_classes_train = np.unique(y_train)
         unique_classes_test = np.unique(y_test)
