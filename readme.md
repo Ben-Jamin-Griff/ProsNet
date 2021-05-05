@@ -20,25 +20,27 @@ I liked this idea.
 
 For a long time now I've been trying to learn data science and machine learning alongside my research role and I've been struggling to strike the balance between learning and doing.
 
-I've been constantly trying to sharpen my skills by completing courses and have nothing to show for my efforts.
+I've been constantly trying to sharpen my skills by completing courses but have nothing to show for my efforts.
 
-I knew I needed to step off the tutorial treadmill and start building projects that would show I knew what I was talking about.
+I knew I needed to step off the tutorial treadmill and start building projects that would show that I could run a data science project.
 
 So I set myself the task of developing a deep learning model.
 
-I was new to deep learning. I knew the basics of how neural networks were developed.
-
-But I didn't know much about tools and techniques for developing these models.
+I was new to deep learning. I knew the basics of how neural networks worked. But I didn't know much about tools and techniques for developing these models.
 
 I decided I would use Tensor Flow. I had heared of it before and knew that it was a well used library in the deep learning community.
 
-Now I needed a reason for developing the model.
+But I needed a reason for creating a model...
 
-I'd been working on a research project recently on human activity recognition. Trying to classify the postures of lower-limb amputees using accelerometer data from their shank.
+Recently, I'd been working on a human activity recognition research project. Trying to classify the postures of lower-limb amputees using accelerometer data from their shank.
 
-The traditional method is to use acceleration data from the thigh. It's far easier to differentiate between the key postures; sitting, standing and walking, when you can use gravitational acceleration to differentiate between the static postures.
+The traditional method is to use acceleration data from the thigh.
 
-But thigh based data makes it very difficult to differentiate sitting from standing.
+It's far easier to differentiate between the key postures; sitting, standing and walking, when you can use gravitational acceleration to tell the difference between the static postures.
+
+But the shank if the perfect place to wear an accelerometer because we can put it inside a prosthetic leg.
+
+The problem with this is that shank data makes it very difficult to differentiate sitting from standing.
 
 As part of the research project I'd tried using a shallow machine learning model, a K-neighest neighbour algorithm, and hand craft features to differentiate between postures.
 
@@ -52,11 +54,31 @@ I already had some data I'd collected on myself and some friends, so I knew I co
 
 I opened notion and set to work making a project template.
 
-I figured I'd spend around 2 hours (ish) per week day working on the project.
+I figured I'd spend around 2 hours (ish) per weekday working on the project.
 
-Worst case, I wouldn't be able to get the model working and I'd learning something I need to work on.
+Worst case, I wouldn't be able to get the model working and I'd learn this was something I needed to focus on.
 
-Best case, I'd make a model that would beat my old research results and have a potential new project to write up.
+Best case, I'd make a model that would beat my old research results and have a new project to write up.
 
 Either way, I'd have something more to show for 6-weeks of work than if I'd kept doing tutorials.
 
+## Breaking down the project
+Talk about the 6 week project plan
+
+## Processing my data
+Talk about using OOP and taking processing large CSVs
+
+## What is this deep learning thing anyway?
+Talk about reading papers and looking throgh articles on deep learning. Talk about your first model experiments. Link to notebook
+
+## Standing on the shoulders of giants
+Talk about the MLM article and how you replicated their experiments. Link to notebook.
+
+## Using the model
+Talk about how you integrated the model into your software so someone could use it to make predictions
+
+## What have I learning?
+Review what you learned, how you have developed your knowledge and what you would do differently
+
+## What's next?
+Talk about your ideas for your next project and what people can expect from you in the future.
