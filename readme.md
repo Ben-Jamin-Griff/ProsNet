@@ -2,8 +2,6 @@
 
 *Six weeks to create a physical behaviour classification algorithm using Deep Learning*
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Ben-Jamin-Griff/AmputeePostureClassification/blob/main/notebooks/amputee_posture_classification_experiments_deep_mlm.ipynb)
-
 ## Getting started: The 42-day project
 
 A few weeks ago, I read an article by Daniel Bourke on replicating Airbnb's amenity detection system using Detectron 2.
@@ -73,6 +71,8 @@ Talk about reading papers and looking throgh articles on deep learning. Talk abo
 
 ## Standing on the shoulders of giants
 Talk about the MLM article and how you replicated their experiments. Link to notebook.
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Ben-Jamin-Griff/AmputeePostureClassification/blob/main/notebooks/amputee_posture_classification_experiments_deep_mlm.ipynb)
 
 ## Using the model
 Talk about how you integrated the model into your software so someone could use it to make predictions
