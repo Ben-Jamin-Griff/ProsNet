@@ -29,9 +29,6 @@ class ShallowModel(Model):
             n_neighbors = 10
             random_state = 42
 
-            #dim = self.dataset.shape[0]
-            #n_classes = len(np.unique(self.postures))
-
             pipeline = make_pipeline(Normalizer(), LinearDiscriminantAnalysis(n_components=2))
             knn = KNeighborsClassifier(n_neighbors=n_neighbors)
             pipeline.fit(X_train, y_train)
@@ -51,9 +48,6 @@ class ShallowModel(Model):
                                 loc="upper left", title="Classes")
                     
             ax.add_artist(legend1)
-            
-            ### For making predictions
-            ####knn.predict(pipeline.transform(feature_set))
 
             disp = plot_confusion_matrix(knn, pipeline.transform(X_test), y_test,
                                         #display_labels=LABELS,

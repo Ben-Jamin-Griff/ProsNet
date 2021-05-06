@@ -59,3 +59,7 @@ class Dataset(ABCDataset, Helper):
         engineering_set = np.load(filename + '_' + type_of_set + '_set.npy')
         posture_set = np.load(filename + '_' + type_of_set + '_set_classes.npy')
         self.dataset = [engineering_set, posture_set]
+
+    def combine_sets(self, set):
+        self.dataset[0] = np.concatenate((self.dataset[0], set.dataset[0]), axis=0)
+        self.dataset[1] = np.concatenate((self.dataset[1], set.dataset[1]), axis=0)

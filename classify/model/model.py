@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import sklearn.metrics as metrics
 import tensorflow as tf
+import pickle
 
 class Model(ABCModel, Plotter):
     def __init__(self):
@@ -144,10 +145,29 @@ class Model(ABCModel, Plotter):
         print(classification_report(self.postures.astype(int), self.predictions.astype(int)))
 
     def make_prediction(self):
-        predictions_probabilities = self.model.predict(self.dataset)
-        predictions = np.argmax(predictions_probabilities, axis=1)
-        self.predictions = predictions.astype(float)
+        if self.pipeline == None:
+            predictions_probabilities = self.model.predict(self.dataset)
+            predictions = np.argmax(predictions_probabilities, axis=1)
+            self.predictions = predictions.astype(float)
+        else:
+            predictions = self.model.predict(self.pipeline.transform(self.dataset))
+            self.predictions = predictions.astype(float)
 
     def save_predictions(self, filename):
         # Make a df... That might be a better way of creating a table to save to CSV
         np.savetxt(filename + '_predictions.csv', self.predictions, delimiter=',', fmt='%d' , header='ActivityCodes (0=sedentary 1=standing 2=stepping 3=lying')
+
+    def save_object(self, filename):
+        filehandler = open('./models/' + filename + '_model.obj', 'wb')
+        pickle.dump(self, filehandler)
+
+    def load_object(self):
+        root = tk.Tk()
+        root.withdraw()
+        file_path = filedialog.askopenfilename(title = "Load object")
+        filehandler = open(file_path, 'rb')
+        loaded_object = pickle.load(filehandler) 
+        self.model = loaded_object.model
+        self.pipeline = loaded_object.pipeline
+        print(f"Loaded object: {file_path}")
+        print('----------')
