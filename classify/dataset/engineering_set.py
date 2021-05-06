@@ -8,7 +8,7 @@ class EngineeringSet(Dataset):
     def __init__(self):
         super().__init__()
 
-    def create_set(self):
+    def create_set(self, epochSize = 15):
         if self.processing_type == 'epoch':
             if self.posture_stack is not None:
                 engineering_set = np.empty((0,295,3), int)
@@ -85,7 +85,6 @@ class EngineeringSet(Dataset):
                         chunk = chunk.reset_index(drop=True)
                         chunk.Time = pd.to_datetime(chunk.Time, unit='d', origin='1899-12-30')
 
-                    epochSize = 15
                     numOfEpochs = (CHUNKSIZE / epochSize)
                     for i in range(int(numOfEpochs)):
                         current_epoch = chunk.iloc[(15*20)*i:(15*20)*(i+1):,:].copy()

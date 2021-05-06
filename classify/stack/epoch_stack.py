@@ -27,7 +27,7 @@ class EpochStack(ABCPostureStack, Helper):
         print(f"The posture stacks contains {self.posture_stack_duration} seconds of data.")
         print('----------')
 
-    def create_stack(self, stack_type, subset_of_data = None):
+    def create_stack(self, stack_type, subset_of_data = None, epochSize = 15):
         """
         stack_type = 'mixed' or 'pure'
         subset_of_data = int number of events or None
@@ -40,8 +40,7 @@ class EpochStack(ABCPostureStack, Helper):
                 print(f'Using subset of data with just over {subset_of_data} events')
                 event_data = event_data.iloc[:subset_of_data]
             event_data.Time = pd.to_datetime(event_data.Time, unit='d', origin='1899-12-30')
-            epochSize = 15
-            windowShift = 5
+            windowShift = epochSize/2
             startTime = event_data.Time.iloc[0]
             self.posture_stack_start_time = startTime
             endTime = event_data.Time.iloc[-1]

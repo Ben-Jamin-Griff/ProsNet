@@ -10,7 +10,7 @@ class FeatureSet(Dataset, Plotter):
     def __init__(self):
         super().__init__()
 
-    def create_set(self):
+    def create_set(self, epochSize = 15):
         if self.processing_type == 'epoch':
             if self.posture_stack is not None:
 
