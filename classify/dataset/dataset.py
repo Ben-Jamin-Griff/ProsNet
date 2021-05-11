@@ -61,5 +61,9 @@ class Dataset(ABCDataset, Helper):
         self.dataset = [engineering_set, posture_set]
 
     def combine_sets(self, set):
-        self.dataset[0] = np.concatenate((self.dataset[0], set.dataset[0]), axis=0)
-        self.dataset[1] = np.concatenate((self.dataset[1], set.dataset[1]), axis=0)
+        try:
+            self.dataset[0] = np.concatenate((self.dataset[0], set.dataset[0]), axis=0)
+            self.dataset[1] = np.concatenate((self.dataset[1], set.dataset[1]), axis=0)
+        except:
+            print("...No current data in set")
+            self.dataset = set.dataset

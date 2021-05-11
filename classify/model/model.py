@@ -169,5 +169,10 @@ class Model(ABCModel, Plotter):
         loaded_object = pickle.load(filehandler) 
         self.model = loaded_object.model
         self.pipeline = loaded_object.pipeline
+        self.dataset = loaded_object.dataset
+        self.predictions = loaded_object.predictions
+        self.postures = loaded_object.postures
+        self.posture_stack_start_time = loaded_object.posture_stack_start_time
+        self.one_hot_postures = loaded_object.one_hot_postures
         print(f"Loaded object: {file_path}")
         print('----------')

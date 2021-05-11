@@ -9,81 +9,56 @@ Create a shallow model
 This script provides an example of how to load in data from an activPAL, create a posture stack using the thigh events, create a feature set from the raw acceleration data and corresponding posture classification codes, create a model using scikit learn (KNN) and save the model to a pickle object.
 """
 
-# Load in participant 1's data
-activPal = Activpal()
-activPal.load_raw_data()
-activPal.load_event_data()
+epoch_sizes = [5, 15, 30, 60, 120, 180]
 
-posture_stack = EpochStack()
-posture_stack.get_data(activPal)
-posture_stack.create_stack(stack_type = 'pure', subset_of_data = 100, epochSize=15)
-posture_stack.show_stack()
+raw_data_paths = [
+    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-5/shank-AP472387 202a 19Sep20 1-00pm for 2d 15m-CREA-PA08110254-AccelDataUncompressed.csv",
+    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-6/shank-AP472387 202a 29Jan21 3-15pm for 7d-CREA-PA08110254-AccelDataUncompressed.csv",
+    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-7/shank-AP472387 202a 5Feb21 9-50pm for 3d 10h 8m-CREA-PA08110254-AccelDataUncompressed.csv",
+    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/icl-data-1/shank-AP872481 202a 7Dec20 10-45am for 4d 7h 5m-CREA-PA08110254-AccelDataUncompressed.csv"
+]
 
-feature_set = FeatureSet()
-feature_set.get_data(activPal)
-feature_set.get_posture_stack(posture_stack)
-feature_set.create_set()
-feature_set.show_set()
+event_data_paths = [
+    'C:/Users\ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-5/thigh-AP870085 202a 19Sep20 1-00pm for 2d 17m-CREA-PA08110254-Events.csv',
+    'C:/Users\ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-6/thigh-AP872479 202a 29Jan21 3-15pm for 7d-CREA-PA08110254-Events.csv',
+    'C:/Users\ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-7/thigh-AP872479 202a 5Feb21 9-50pm for 3d 22h 10m-CREA-PA08110254-Events.csv',
+    'C:/Users\ANS292/OneDrive - University of Salford/Code Projects/apc/data/icl-data-1/thigh-AP870085 202a 7Dec20 10-47am for 4d 7h 7m-CREA-PA08110254-Events.csv'
+]
 
-# Load in participant 2's data
-activPal_2 = Activpal()
-activPal_2.load_raw_data()
-activPal_2.load_event_data()
+for i in range(len(epoch_sizes)):
 
-posture_stack_2 = EpochStack()
-posture_stack_2.get_data(activPal_2)
-posture_stack_2.create_stack(stack_type = 'pure', subset_of_data = 100, epochSize=15)
-posture_stack_2.show_stack()
+    print(f'Creating a model with {epoch_sizes[i]} second epochs')
+    print('---------------------')
 
-feature_set_2 = FeatureSet()
-feature_set_2.get_data(activPal_2)
-feature_set_2.get_posture_stack(posture_stack_2)
-feature_set_2.create_set()
-feature_set_2.show_set()
+    feature_set = FeatureSet()
 
-# Load in participant 3's data
-activPal_3 = Activpal()
-activPal_3.load_raw_data()
-activPal_3.load_event_data()
+    for k in range(4):
+        # Load in each participant's data
+        loop_activPal = Activpal()
+        loop_activPal.load_raw_data(raw_data_paths[k])
+        loop_activPal.load_event_data(event_data_paths[k])
 
-posture_stack_3 = EpochStack()
-posture_stack_3.get_data(activPal_3)
-posture_stack_3.create_stack(stack_type = 'pure', subset_of_data = 100, epochSize=15)
-posture_stack_3.show_stack()
+        loop_posture_stack = EpochStack()
+        loop_posture_stack.get_data(loop_activPal)
+        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = None, epochSize=epoch_sizes[i])
+        loop_posture_stack.show_stack()
 
-feature_set_3 = FeatureSet()
-feature_set_3.get_data(activPal_3)
-feature_set_3.get_posture_stack(posture_stack_3)
-feature_set_3.create_set()
-feature_set_3.show_set()
+        loop_feature_set = FeatureSet()
+        loop_feature_set.get_data(loop_activPal)
+        loop_feature_set.get_posture_stack(loop_posture_stack)
+        loop_feature_set.create_set()
+        loop_feature_set.show_set()
 
-# Load in participant 4's data
-activPal_4 = Activpal()
-activPal_4.load_raw_data()
-activPal_4.load_event_data()
+        # Combine datasets
+        feature_set.combine_sets(loop_feature_set)
 
-posture_stack_4 = EpochStack()
-posture_stack_4.get_data(activPal_4)
-posture_stack_4.create_stack(stack_type = 'pure', subset_of_data = 100, epochSize=15)
-posture_stack_4.show_stack()
-
-feature_set_4 = FeatureSet()
-feature_set_4.get_data(activPal_4)
-feature_set_4.get_posture_stack(posture_stack_4)
-feature_set_4.create_set()
-feature_set_4.show_set()
-
-# Combine datasets
-feature_set.combine_sets(feature_set_2)
-feature_set.combine_sets(feature_set_3)
-feature_set.combine_sets(feature_set_4)
-
-# Create a model
-model = ShallowModel()
-model.get_data(feature_set)
-model.get_postures(feature_set)
-model.show_set()
-model.reassign_classes()
-model.remove_classes(4)
-model.create_model('knn')
-model.save_object('knn')
+    # Create a model
+    model = ShallowModel()
+    model.get_data(feature_set)
+    model.get_postures(feature_set)
+    model.show_set()
+    model.reassign_classes()
+    model.remove_classes(4)
+    object_name = 'knn_epoch_window_' + str(epoch_sizes[i])
+    model.create_model('knn', save_model_results = object_name)
+    model.save_object(object_name)

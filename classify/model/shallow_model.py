@@ -21,7 +21,7 @@ class ShallowModel(Model):
     def __init__(self):
         super().__init__()
 
-    def create_model(self, type_of_model):
+    def create_model(self, type_of_model, plot_results = False, save_model_results = None):
         if type_of_model == 'knn':
             X_train, X_test, y_train, y_test = train_test_split(self.dataset, self.postures, test_size=0.2, random_state=42)
             LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
@@ -49,17 +49,32 @@ class ShallowModel(Model):
                     
             ax.add_artist(legend1)
 
+            if plot_results:
+                plt.grid(False)
+                plt.ion()
+                plt.show()
+                plt.draw()
+                plt.pause(0.001)
+                input("Press [enter] to continue.")
+
+            if save_model_results is not None:
+                plt.savefig(save_model_results + '_plot.png', bbox_inches='tight')
+
             disp = plot_confusion_matrix(knn, pipeline.transform(X_test), y_test,
                                         #display_labels=LABELS,
                                         cmap=plt.cm.Blues,
                                         normalize='true');
 
-            plt.grid(False)
-            plt.ion()
-            plt.show()
-            plt.draw()
-            plt.pause(0.001)
-            input("Press [enter] to continue.")
+            if plot_results:
+                plt.grid(False)
+                plt.ion()
+                plt.show()
+                plt.draw()
+                plt.pause(0.001)
+                input("Press [enter] to continue.")
+
+            if save_model_results is not None:
+                plt.savefig(save_model_results + '_results.png', bbox_inches='tight')
 
         self.model = knn
         self.pipeline = pipeline
