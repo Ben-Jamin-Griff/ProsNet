@@ -65,6 +65,9 @@ class ShallowModel(Model):
                                         cmap=plt.cm.Blues,
                                         normalize='true');
 
+            predicted = knn.predict(pipeline.transform(X_test))
+            print(classification_report(y_test, predicted))
+
             if plot_results:
                 plt.grid(False)
                 plt.ion()
