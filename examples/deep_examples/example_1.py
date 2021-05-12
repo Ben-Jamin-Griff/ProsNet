@@ -1,7 +1,6 @@
 from activity_monitor.activpal import Activpal
 from stack.epoch_stack import EpochStack
 from dataset.engineering_set import EngineeringSet
-from model.deep_model import DeepModel
 
 """
 Creating a deep training set

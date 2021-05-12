@@ -11,7 +11,7 @@ class EngineeringSet(Dataset):
     def create_set(self, epochSize = 15):
         if self.processing_type == 'epoch':
             if self.posture_stack is not None:
-                print("WARNING: CODE IS IGNORING SPECIFIED EPOCH SIZE WHEN YOU CREATED POSTURE STAK AND REVERTING TO A WINDOW OF 295 SAMPLES. UPDATE THIS CODE FOR DIFFERENT ENGINEERING SET EPOCH SIZES")
+                print('WARNING: CODE IS IGNORING SPECIFIED EPOCH SIZE WHEN YOU CREATED POSTURE STAK AND REVERTING TO A WINDOW OF 295 SAMPLES. UPDATE THIS CODE FOR DIFFERENT ENGINEERING SET EPOCH SIZES')
                 engineering_set = np.empty((0,295,3), int)
                 posture_class = []
                 # Load in the accelerometer
