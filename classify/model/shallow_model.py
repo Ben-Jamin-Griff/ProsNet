@@ -66,7 +66,12 @@ class ShallowModel(Model):
                                         normalize='true');
 
             predicted = knn.predict(pipeline.transform(X_test))
-            print(classification_report(y_test, predicted))
+
+            f = open(save_model_results + '_results.txt',"w+")
+            f.write("Classification Results\n")
+            f.write(classification_report(y_test, predicted) + "\n")
+            f.write('-----------------------')
+            f.close
 
             if plot_results:
                 plt.grid(False)
@@ -77,7 +82,7 @@ class ShallowModel(Model):
                 input("Press [enter] to continue.")
 
             if save_model_results is not None:
-                plt.savefig(save_model_results + '_results.png', bbox_inches='tight')
+                plt.savefig(save_model_results + '_conf_matrix.png', bbox_inches='tight')
 
         self.model = knn
         self.pipeline = pipeline

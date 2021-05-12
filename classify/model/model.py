@@ -68,8 +68,6 @@ class Model(ABCModel, Plotter):
                 self.postures[count] = 3
             elif self.postures[count] == 3.2:
                 self.postures[count] = 3
-            elif self.postures[count] == 5.0:
-                self.postures[count] = 0
             else:
                 continue
 
