@@ -44,7 +44,7 @@ class FeatureSet(Dataset, Plotter):
                     elif row.Start_Time > chunk.Time.iloc[-1]:
                         break
 
-                    feature_array = self.create_feature_array(current_epoch)
+                    feature_array = self.create_feature_array_new(current_epoch)
                     # Add this row to the feature set
                     feature_set=np.append(feature_set, [feature_array], axis=0)
 
@@ -399,6 +399,158 @@ class FeatureSet(Dataset, Plotter):
 
         spower_feats = []
         f, p = signal.periodogram(vmJerkData, 20e0)
+        for i in range(n_feats):
+            mask = (f >= edges[i]) & (f <= edges[i+1])
+            sum(p[mask])
+            spower_feats=np.append(spower_feats, sum(p[mask]))
+        feature_array=np.append(feature_array, spower_feats)
+
+        # Return the feature array
+        return feature_array
+
+    def create_feature_array_new(self, current_epoch):
+        xData = current_epoch['X'].to_numpy() #self.plot_signal(xData, 'xData')
+        yData = current_epoch['Y'].to_numpy()
+        zData = current_epoch['Z'].to_numpy()
+
+        # Filter the data
+        fc = 5  # Cut-off frequency of the filter
+        w = fc / (20 / 2) # Normalize the frequency
+        b, a = signal.butter(5, w, 'low')
+        xDataFilt = signal.filtfilt(b, a, xData)
+        yDataFilt = signal.filtfilt(b, a, yData)
+        zDataFilt = signal.filtfilt(b, a, zData)
+        
+        # Calculate vector magnitude
+        vmData = np.sqrt(xDataFilt**2 + yDataFilt**2 + zDataFilt**2)
+
+        feature_array = []
+        # Average value in signal buffer for all acceleration components
+        feature_array=np.append(feature_array, np.mean(xDataFilt))
+        feature_array=np.append(feature_array, np.mean(yDataFilt))
+        feature_array=np.append(feature_array, np.mean(zDataFilt))
+        feature_array=np.append(feature_array, np.mean(vmData))
+        # Standard deviation
+        feature_array=np.append(feature_array, np.std(xDataFilt))
+        feature_array=np.append(feature_array, np.std(yDataFilt))
+        feature_array=np.append(feature_array, np.std(zDataFilt))
+        feature_array=np.append(feature_array, np.std(vmData))
+        # Median absolute deviation
+        feature_array=np.append(feature_array, stats.median_absolute_deviation(xDataFilt))
+        feature_array=np.append(feature_array, stats.median_absolute_deviation(yDataFilt))
+        feature_array=np.append(feature_array, stats.median_absolute_deviation(zDataFilt))
+        feature_array=np.append(feature_array, stats.median_absolute_deviation(vmData))
+        # Maximum sample
+        feature_array=np.append(feature_array, np.max(xDataFilt))
+        feature_array=np.append(feature_array, np.max(yDataFilt))
+        feature_array=np.append(feature_array, np.max(zDataFilt))
+        feature_array=np.append(feature_array, np.max(vmData))
+        # Minimum sample
+        feature_array=np.append(feature_array, np.min(xDataFilt))
+        feature_array=np.append(feature_array, np.min(yDataFilt))
+        feature_array=np.append(feature_array, np.min(zDataFilt))
+        feature_array=np.append(feature_array, np.min(vmData))
+        # Signal magnitude area
+        feature_array=np.append(feature_array, np.trapz(xDataFilt))
+        feature_array=np.append(feature_array, np.trapz(yDataFilt))
+        feature_array=np.append(feature_array, np.trapz(zDataFilt))
+        feature_array=np.append(feature_array, np.trapz(vmData))
+        # Energy measure
+        energy = np.sum(xDataFilt**2) / len(xDataFilt)
+        feature_array=np.append(feature_array, energy)
+        energy = np.sum(yDataFilt**2) / len(yDataFilt)
+        feature_array=np.append(feature_array, energy)
+        energy = np.sum(zDataFilt**2) / len(zDataFilt)
+        feature_array=np.append(feature_array, energy)
+        energy = np.sum(vmData**2) / len(vmData)
+        feature_array=np.append(feature_array, energy)
+        # Inter-quartile range
+        feature_array=np.append(feature_array, stats.iqr(xDataFilt, axis=0))
+        feature_array=np.append(feature_array, stats.iqr(yDataFilt, axis=0))
+        feature_array=np.append(feature_array, stats.iqr(zDataFilt, axis=0))
+        feature_array=np.append(feature_array, stats.iqr(vmData, axis=0))
+        # Autocorrelation features for all three acceleration components (3 each): height of main peak; height and position of second peak - Not sure this is right?
+        autocorrelation = np.correlate(xDataFilt, xDataFilt, mode='full')
+        autocorrelation = autocorrelation[len(xDataFilt)-1:][0]
+        feature_array=np.append(feature_array, autocorrelation)
+
+        autocorrelation = np.correlate(yDataFilt, yDataFilt, mode='full')
+        autocorrelation = autocorrelation[len(yDataFilt)-1:][0]
+        feature_array=np.append(feature_array, autocorrelation)
+
+        autocorrelation = np.correlate(zDataFilt, zDataFilt, mode='full')
+        autocorrelation = autocorrelation[len(zDataFilt)-1:][0]
+        feature_array=np.append(feature_array, autocorrelation)
+
+        autocorrelation = np.correlate(vmData, vmData, mode='full')
+        autocorrelation = autocorrelation[len(vmData)-1:][0]
+        feature_array=np.append(feature_array, autocorrelation)
+        # Spectral peak features (12 each): height and position of first 6 peaks
+        f, p = signal.periodogram(xDataFilt, 20e0)
+        sort_index = np.argsort(p)
+        p_sorted = p[sort_index]
+        f_sorted = f[sort_index]
+        speak_feats = p_sorted[-6:]
+        speak_feats2 = f_sorted[-6:]
+        feature_array=np.append(feature_array, speak_feats)
+        feature_array=np.append(feature_array, speak_feats2)
+
+        f, p = signal.periodogram(yDataFilt, 20e0)
+        sort_index = np.argsort(p)
+        p_sorted = p[sort_index]
+        f_sorted = f[sort_index]
+        speak_feats = p_sorted[-6:]
+        speak_feats2 = f_sorted[-6:]
+        feature_array=np.append(feature_array, speak_feats)
+        feature_array=np.append(feature_array, speak_feats2)
+
+        f, p = signal.periodogram(zDataFilt, 20e0)
+        sort_index = np.argsort(p)
+        p_sorted = p[sort_index]
+        f_sorted = f[sort_index]
+        speak_feats = p_sorted[-6:]
+        speak_feats2 = f_sorted[-6:]
+        feature_array=np.append(feature_array, speak_feats)
+        feature_array=np.append(feature_array, speak_feats2)
+
+        f, p = signal.periodogram(vmData, 20e0)
+        sort_index = np.argsort(p)
+        p_sorted = p[sort_index]
+        f_sorted = f[sort_index]
+        speak_feats = p_sorted[-6:]
+        speak_feats2 = f_sorted[-6:]
+        feature_array=np.append(feature_array, speak_feats)
+        feature_array=np.append(feature_array, speak_feats2)
+        # Spectral power features (4 each): total power in 4 adjacent and pre-defined frequency bands
+        edges = [0.5, 1.5, 5, 7.5, 10]
+        n_feats = len(edges)-1
+        
+        spower_feats = []
+        f, p = signal.periodogram(xDataFilt, 20e0)
+        for i in range(n_feats):
+            mask = (f >= edges[i]) & (f <= edges[i+1])
+            sum(p[mask])
+            spower_feats=np.append(spower_feats, sum(p[mask]))
+        feature_array=np.append(feature_array, spower_feats)
+
+        spower_feats = []
+        f, p = signal.periodogram(yDataFilt, 20e0)
+        for i in range(n_feats):
+            mask = (f >= edges[i]) & (f <= edges[i+1])
+            sum(p[mask])
+            spower_feats=np.append(spower_feats, sum(p[mask]))
+        feature_array=np.append(feature_array, spower_feats)
+
+        spower_feats = []
+        f, p = signal.periodogram(zDataFilt, 20e0)
+        for i in range(n_feats):
+            mask = (f >= edges[i]) & (f <= edges[i+1])
+            sum(p[mask])
+            spower_feats=np.append(spower_feats, sum(p[mask]))
+        feature_array=np.append(feature_array, spower_feats)
+
+        spower_feats = []
+        f, p = signal.periodogram(vmData, 20e0)
         for i in range(n_feats):
             mask = (f >= edges[i]) & (f <= edges[i+1])
             sum(p[mask])

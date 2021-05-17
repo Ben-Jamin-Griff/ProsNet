@@ -13,9 +13,11 @@ from sklearn.model_selection import cross_val_score
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neighbors import (KNeighborsClassifier)
 from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import Normalizer
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import plot_confusion_matrix
+from sklearn.model_selection import RepeatedStratifiedKFold
 
 class ShallowModel(Model):
     def __init__(self):
@@ -23,11 +25,12 @@ class ShallowModel(Model):
 
     def create_model(self, type_of_model, plot_results = False, save_model_results = None):
         if type_of_model == 'knn':
+            
             X_train, X_test, y_train, y_test = train_test_split(self.dataset, self.postures, test_size=0.2, random_state=42)
             LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
+            
             unique_classes_train, unique_classes_test = self.review_class_imbalance(y_train, y_test, LABELS)
             n_neighbors = 10
-            random_state = 42
 
             pipeline = make_pipeline(Normalizer(), LinearDiscriminantAnalysis(n_components=2))
             knn = KNeighborsClassifier(n_neighbors=n_neighbors)
@@ -86,3 +89,73 @@ class ShallowModel(Model):
 
         self.model = knn
         self.pipeline = pipeline
+
+    def create_model_new(self, type_of_model):
+        from matplotlib import pyplot
+        if type_of_model == 'knn':
+            X = self.dataset, 
+            y = self.postures
+            LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
+            unique_classes_train, unique_classes_test = self.review_class_imbalance(X, y, LABELS)
+            n_neighbors = 10
+
+            # get a list of models to evaluate
+            def get_models():
+                models = dict()
+                for i in range(2,10):
+                    steps = [('norm', Normalizer()),('lda', LinearDiscriminantAnalysis(n_components=i)), ('m', KNeighborsClassifier(n_neighbors=n_neighbors))]
+                    models[str(i)] = Pipeline(steps=steps)
+                return models
+
+            # evaluate a give model using cross-validation
+            def evaluate_model(model, X, y):
+                cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=42)
+                scores = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-1, error_score='raise')
+                return scores
+
+            models = get_models()
+            # evaluate the models and store results
+            results, names = list(), list()
+            for name, model in models.items():
+                breakpoint()
+                scores = evaluate_model(model, X, y)
+                results.append(scores)
+                names.append(name)
+                print('>%s %.3f (%.3f)' % (name, np.mean(scores), np.std(scores)))
+            # plot model performance for comparison
+            pyplot.boxplot(results, labels=names, showmeans=True)
+            pyplot.show()            
+
+    def compare_features(self):
+        import matplotlib.pyplot as plt
+        from sklearn.svm import SVC
+        from sklearn.model_selection import StratifiedKFold
+        from sklearn.feature_selection import RFECV
+        from sklearn.feature_selection import RFE
+
+        transformer = Normalizer().fit(self.dataset)
+        X = transformer.transform(self.dataset)
+        y = self.postures
+
+        svc = SVC(kernel="linear")
+        min_features_to_select = 1  # Minimum number of features to consider
+        rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2), scoring='accuracy', min_features_to_select=min_features_to_select)
+
+        rfecv.fit(X, y)
+
+        rfe = RFE(svc, 10)
+        rfe = rfe.fit(X, y)
+
+        print(rfe.support_)
+        print(rfe.ranking_)
+
+        print("Optimal number of features : %d" % rfecv.n_features_)
+
+        # Plot number of features VS. cross-validation scores
+        plt.figure()
+        plt.xlabel("Number of features selected")
+        plt.ylabel("Cross validation score (nb of correct classifications)")
+        plt.plot(range(min_features_to_select,
+                    len(rfecv.grid_scores_) + min_features_to_select),
+                rfecv.grid_scores_)
+        plt.show()
