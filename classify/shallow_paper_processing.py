@@ -12,8 +12,8 @@ This script provides an example of how to load in data from an activPAL, create 
 epoch_sizes = [5, 15, 30, 60, 120, 180]
 
 raw_data_paths = [
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-5/shank-AP472387 202a 19Sep20 1-00pm for 2d 15m-CREA-PA08110254-AccelDataUncompressed.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-6/shank-AP472387 202a 29Jan21 3-15pm for 7d-CREA-PA08110254-AccelDataUncompressed.csv",
+    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-5/shank-AP472387 202a 19Sep20 1-00pm for 2d 15m.datx",
+    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-6/shank-AP472387 202a 29Jan21 3-15pm for 7d.datx",
     "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/home-data-collection-7/shank-AP472387 202a 5Feb21 9-50pm for 3d 10h 8m.datx",
     "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/icl-data-1/DH_shank-AP872481 202a 7Dec20 10-45am for 4d 7h 5m.datx"
 ]
