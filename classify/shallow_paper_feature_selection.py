@@ -40,7 +40,7 @@ for i in range(len(epoch_sizes)):
 
         loop_posture_stack = EpochStack()
         loop_posture_stack.get_data(loop_activPal)
-        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = 50, epochSize=epoch_sizes[i])
+        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = 100, epochSize=epoch_sizes[i])
         loop_posture_stack.show_stack()
 
         loop_feature_set = FeatureSet()
@@ -60,4 +60,4 @@ for i in range(len(epoch_sizes)):
     model.reassign_classes()
     model.remove_classes(4)
     model.remove_classes(5)
-    model.create_model_new('knn')
+    model.compare_best_feature_combo()

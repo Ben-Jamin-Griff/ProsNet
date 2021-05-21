@@ -62,3 +62,5 @@ for i in range(len(epoch_sizes)):
     model.remove_classes(5)
     object_name = 'knn_epoch_window_' + str(epoch_sizes[i])
     model.create_model('knn', save_model_results = object_name)
+
+    #https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html

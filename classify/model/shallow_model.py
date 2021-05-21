@@ -88,68 +88,39 @@ class ShallowModel(Model):
                 plt.savefig(save_model_results + '_conf_matrix.png', bbox_inches='tight')
 
         self.model = knn
-        self.pipeline = pipeline
+        self.pipeline = pipeline        
 
-    def create_model_new(self, type_of_model):
-        from matplotlib import pyplot
-        if type_of_model == 'knn':
-            X = self.dataset, 
-            y = self.postures
-            LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
-            unique_classes_train, unique_classes_test = self.review_class_imbalance(X, y, LABELS)
-            n_neighbors = 10
-
-            # get a list of models to evaluate
-            def get_models():
-                models = dict()
-                for i in range(2,10):
-                    steps = [('norm', Normalizer()),('lda', LinearDiscriminantAnalysis(n_components=i)), ('m', KNeighborsClassifier(n_neighbors=n_neighbors))]
-                    models[str(i)] = Pipeline(steps=steps)
-                return models
-
-            # evaluate a give model using cross-validation
-            def evaluate_model(model, X, y):
-                cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=42)
-                scores = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-1, error_score='raise')
-                return scores
-
-            models = get_models()
-            # evaluate the models and store results
-            results, names = list(), list()
-            for name, model in models.items():
-                breakpoint()
-                scores = evaluate_model(model, X, y)
-                results.append(scores)
-                names.append(name)
-                print('>%s %.3f (%.3f)' % (name, np.mean(scores), np.std(scores)))
-            # plot model performance for comparison
-            pyplot.boxplot(results, labels=names, showmeans=True)
-            pyplot.show()            
-
-    def compare_features(self):
+    def compare_best_feature_combo(self):
         import matplotlib.pyplot as plt
         from sklearn.svm import SVC
-        from sklearn.model_selection import StratifiedKFold
         from sklearn.feature_selection import RFECV
         from sklearn.feature_selection import RFE
 
+        breakpoint()
+
+        pipeline = make_pipeline(Normalizer(), LinearDiscriminantAnalysis(n_components=2), KNeighborsClassifier(n_neighbors=10))
+
         transformer = Normalizer().fit(self.dataset)
         X = transformer.transform(self.dataset)
+        #X = self.dataset
         y = self.postures
 
         svc = SVC(kernel="linear")
+
         min_features_to_select = 1  # Minimum number of features to consider
-        rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2), scoring='accuracy', min_features_to_select=min_features_to_select)
+        rfecv = RFECV(svc, step=1, cv=None, scoring='f1_weighted', min_features_to_select=min_features_to_select)
 
         rfecv.fit(X, y)
 
-        rfe = RFE(svc, 10)
-        rfe = rfe.fit(X, y)
-
-        print(rfe.support_)
-        print(rfe.ranking_)
-
+        print(rfecv.support_)
+        print(rfecv.ranking_)
         print("Optimal number of features : %d" % rfecv.n_features_)
+        print([i for i, x in enumerate(rfecv.support_) if x])
+
+        rfe = RFE(svc, 3)
+        rfe = rfe.fit(X, y)
+        print(rfe.support_)
+        print([i for i, x in enumerate(rfe.support_) if x])
 
         # Plot number of features VS. cross-validation scores
         plt.figure()
@@ -159,3 +130,4 @@ class ShallowModel(Model):
                     len(rfecv.grid_scores_) + min_features_to_select),
                 rfecv.grid_scores_)
         plt.show()
+        
