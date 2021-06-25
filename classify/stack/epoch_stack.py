@@ -83,3 +83,11 @@ class EpochStack(ABCPostureStack, Helper):
                         else:
                             posture_stack.iloc[i, 2] = 99
             self.posture_stack = posture_stack
+
+    def remove_epochs(self, filename = None):
+        if filename is not None:
+            file_path = filename
+
+            # datetime(year, month, day, hour, minute, second, microsecond)
+            #test = datetime(2017, 11, 28, 23, 55, 59, 342380)
+            
