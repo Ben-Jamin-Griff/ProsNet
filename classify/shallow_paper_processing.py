@@ -41,6 +41,7 @@ for i in range(len(epoch_sizes)):
         loop_posture_stack = EpochStack()
         loop_posture_stack.get_data(loop_activPal)
         loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = None, epochSize=epoch_sizes[i])
+        ###posture_stack.remove_epochs(filename = 'C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/dz-data/DZ_non-wear_test.csv')
         loop_posture_stack.show_stack()
 
         loop_feature_set = FeatureSet()
