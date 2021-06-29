@@ -87,12 +87,11 @@ class EpochStack(ABCPostureStack, Helper):
     def remove_epochs(self, filename = None):
         if filename is not None:
             file_path = filename
-
-        non_wear_data = pd.read_csv(file_path)
-        non_wear_data.start = pd.to_datetime(non_wear_data.start, format="%d/%m/%Y %H:%M")
-        non_wear_data.end = pd.to_datetime(non_wear_data.end, format="%d/%m/%Y %H:%M")
-        for nw_index, nw_row in non_wear_data.iterrows():
-            self.posture_stack = self.posture_stack.drop(self.posture_stack[(((self.posture_stack.Start_Time > nw_row.start) | (self.posture_stack.Finish_Time > nw_row.start)) & ((self.posture_stack.Start_Time < nw_row.end) | (self.posture_stack.Finish_Time < nw_row.end)))].index)
-        self.posture_stack = self.posture_stack.reset_index(drop=True)
-        # This may need updating as it could brake easily
-        self.posture_stack_duration = len(self.posture_stack.index) * 15 # this 15 should'nt be fixed
+            non_wear_data = pd.read_csv(file_path)
+            non_wear_data.start = pd.to_datetime(non_wear_data.start, format="%d/%m/%Y %H:%M")
+            non_wear_data.end = pd.to_datetime(non_wear_data.end, format="%d/%m/%Y %H:%M")
+            for nw_index, nw_row in non_wear_data.iterrows():
+                self.posture_stack = self.posture_stack.drop(self.posture_stack[(((self.posture_stack.Start_Time > nw_row.start) | (self.posture_stack.Finish_Time > nw_row.start)) & ((self.posture_stack.Start_Time < nw_row.end) | (self.posture_stack.Finish_Time < nw_row.end)))].index)
+            self.posture_stack = self.posture_stack.reset_index(drop=True)
+            # This may need updating as it could brake easily
+            self.posture_stack_duration = len(self.posture_stack.index) * 15 # this 15 should'nt be fixed

@@ -19,7 +19,7 @@ class FeatureSet(Dataset, Plotter):
     def create_set(self, epochSize = 15):
         if self.processing_type == 'epoch':
             if self.posture_stack is not None:
-                feature_set = np.empty((0,4), int) # 26 or 200
+                feature_set = np.empty((0,100), int) # 4 or 100
                 posture_class = []
                 meta, signals = load_activpal_data(self.raw_acceleration_data)
                 total_time = meta.stop_datetime - meta.start_datetime
@@ -44,7 +44,7 @@ class FeatureSet(Dataset, Plotter):
                     elif row.Start_Time > chunk.Time.iloc[-1]:
                         break
 
-                    feature_array = self.create_feature_array_opti(current_epoch)
+                    feature_array = self.create_feature_array(current_epoch)
                     # Add this row to the feature set
                     feature_set=np.append(feature_set, [feature_array], axis=0)
 
