@@ -48,22 +48,26 @@ class Dataset(ABCDataset, Helper):
             classes_to_keep = classes_to_keep + (self.dataset[1] != classes)
         self.dataset[1] = self.dataset[1][classes_to_keep]
         self.dataset[0] = self.dataset[0][classes_to_keep]
+        self.dataset[2] = self.dataset[2][classes_to_keep]
 
     def save_set(self, filename, type_of_set):
         print('...saving set')
         np.save(filename + '_' + type_of_set + '_set.npy', self.dataset[0])
         np.save(filename + '_' + type_of_set + '_set_classes.npy', self.dataset[1])
+        np.save(filename + '_' + type_of_set + '_set_ids.npy', self.dataset[2])
 
     def load_set(self, filename, type_of_set):
         print('...loading set')
         engineering_set = np.load(filename + '_' + type_of_set + '_set.npy')
         posture_set = np.load(filename + '_' + type_of_set + '_set_classes.npy')
-        self.dataset = [engineering_set, posture_set]
+        participant_ids = np.load(filename + '_' + type_of_set + '_set_ids.npy')
+        self.dataset = [engineering_set, posture_set, participant_ids]
 
     def combine_sets(self, set):
         try:
             self.dataset[0] = np.concatenate((self.dataset[0], set.dataset[0]), axis=0)
             self.dataset[1] = np.concatenate((self.dataset[1], set.dataset[1]), axis=0)
+            self.dataset[2] = np.concatenate((self.dataset[2], set.dataset[2]), axis=0)
         except:
             print("...No current data in set")
             self.dataset = set.dataset

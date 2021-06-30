@@ -6,6 +6,7 @@ import numpy as np
 import math
 from scipy import signal, misc, stats
 import datetime
+import random as r
 
 from uos_activpal.io.raw import load_activpal_data
 
@@ -16,7 +17,7 @@ class FeatureSet(Dataset, Plotter):
     def __init__(self):
         super().__init__()
 
-    def create_set(self, epochSize = 15):
+    def create_set(self):
         if self.processing_type == 'epoch':
             if self.posture_stack is not None:
                 feature_set = np.empty((0,100), int) # 4 or 100
@@ -53,7 +54,8 @@ class FeatureSet(Dataset, Plotter):
                     self.print_progress_bar(index, len(self.posture_stack.index), 'Feature set progress:')
 
                 posture_class = np.array(posture_class)
-                self.dataset = [feature_set, posture_class]
+                participant_id = np.full(shape=len(posture_class), fill_value=r.randint(0,9999), dtype=np.int)
+                self.dataset = [feature_set, posture_class, participant_id]
                 self.remove_classes()
             else:
                 pass

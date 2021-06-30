@@ -9,8 +9,8 @@ Create a shallow model
 This script provides an example of how to load in data from an activPAL, create a posture stack using the thigh events, create a feature set from the raw acceleration data and corresponding posture classification codes, create a model using scikit learn (KNN) and save the model to a pickle object.
 """
 
-#epoch_sizes = [5, 15, 30, 60, 120, 180]
-epoch_sizes = [15]
+epoch_sizes = [5, 15, 30, 60, 120, 180]
+#epoch_sizes = [15]
 
 raw_data_paths = [
     "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/af-data/AF_Shin-AP971770 202a 28May21 3-28pm for 16d 20h 54m.datx",
@@ -66,7 +66,7 @@ for i in range(len(epoch_sizes)):
 
         loop_posture_stack = EpochStack()
         loop_posture_stack.get_data(loop_activPal)
-        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = 1000, epochSize=epoch_sizes[i])
+        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = None, epochSize=epoch_sizes[i])
         loop_posture_stack.remove_epochs(filename = non_wear_data_paths[k])
         loop_posture_stack.show_stack()
 
@@ -79,15 +79,18 @@ for i in range(len(epoch_sizes)):
         # Combine datasets
         feature_set.combine_sets(loop_feature_set)
 
-    # Create a model
-    model = ShallowModel()
-    model.get_data(feature_set)
-    model.get_postures(feature_set)
-    model.show_set()
-    model.reassign_classes()
-    model.remove_classes(4)
-    model.remove_classes(5)
-    object_name = 'knn_epoch_window_' + str(epoch_sizes[i])
-    model.create_model('knn', save_model_results = object_name)
+    # Saving feature set
+    feature_set.save_set('set_size_' + str(epoch_sizes[i]), 'feature')
+    
+    # Old code for creating a model
+    #model = ShallowModel()
+    #model.get_data(feature_set)
+    #model.get_postures(feature_set)
+    #model.show_set()
+    #model.reassign_classes()
+    #model.remove_classes(4)
+    #model.remove_classes(5)
+    #object_name = 'knn_epoch_window_' + str(epoch_sizes[i])
+    #model.create_model('knn', save_model_results = object_name)
 
     #https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html
