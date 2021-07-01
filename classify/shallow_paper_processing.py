@@ -13,42 +13,42 @@ epoch_sizes = [5, 15, 30, 60, 120, 180]
 #epoch_sizes = [15]
 
 raw_data_paths = [
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/af-data/AF_Shin-AP971770 202a 28May21 3-28pm for 16d 20h 54m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/aw-data/AW_Shin-AP971754 202a 28May21 3-57pm for 10d 46m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/bg1-data/shank-AP472387 202a 5Feb21 9-50pm for 3d 10h 8m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/bg2-data/shank-AP472387 202a 19Sep20 1-00pm for 2d 15m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/dh-data/DH_shank-AP872481 202a 7Dec20 10-45am for 4d 7h 5m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/dz-data/DZ_Shin-AP971719 202a 28May21 3-37pm for 10d 21h 3m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/jm-data/JM_Shank-AP472387 202a 28May21 10-50am for 10d.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/js-data/shank-AP472387 202a 29Jan21 3-15pm for 7d.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/ls-data/LS_Shin-AP971750 202a 28May21 3-46pm for 16d 20h 41m.datx",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/sg-data/SG_Shin-AP971752 202a 2Jun21 12-12pm for 12d 7m.datx",
+    "./data/af-data/AF_Shin-AP971770 202a 28May21 3-28pm for 16d 20h 54m.datx",
+    "./data/aw-data/AW_Shin-AP971754 202a 28May21 3-57pm for 10d 46m.datx",
+    "./data/bg1-data/shank-AP472387 202a 5Feb21 9-50pm for 3d 10h 8m.datx",
+    "./data/bg2-data/shank-AP472387 202a 19Sep20 1-00pm for 2d 15m.datx",
+    "./data/dh-data/DH_shank-AP872481 202a 7Dec20 10-45am for 4d 7h 5m.datx",
+    "./data/dz-data/DZ_Shin-AP971719 202a 28May21 3-37pm for 10d 21h 3m.datx",
+    "./data/jm-data/JM_Shank-AP472387 202a 28May21 10-50am for 10d.datx",
+    "./data/js-data/shank-AP472387 202a 29Jan21 3-15pm for 7d.datx",
+    "./data/ls-data/LS_Shin-AP971750 202a 28May21 3-46pm for 16d 20h 41m.datx",
+    ".data/sg-data/SG_Shin-AP971752 202a 2Jun21 12-12pm for 12d 7m.datx",
 ]
 
 event_data_paths = [
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/af-data/AF_Thigh-AP971728 202a 28May21 3-24pm for 16d 21h-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/aw-data/AW_Thigh-AP971753 202a 28May21 3-53pm for 10d 52m-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/bg1-data/thigh-AP872479 202a 5Feb21 9-50pm for 3d 22h 10m-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/bg2-data/thigh-AP870085 202a 19Sep20 1-00pm for 2d 17m-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/dh-data/thigh-AP870085 202a 7Dec20 10-47am for 4d 7h 7m-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/dz-data/DZ_Thigh-AP971731 202a 28May21 3-34pm for 10d 21h 2m-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/jm-data/JM_Thigh-AP872479 202a 28May21 10-47am for 10d-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/js-data/thigh-AP872479 202a 29Jan21 3-15pm for 7d-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/ls-data/LS_Thigh-AP971772 202a 28May21 3-42pm for 16d 20h 49m-CREA-PA08110254-Events.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/sg-data/SG_Thigh-AP971764 202a 2Jun21 12-09pm for 8d 6h 47m-CREA-PA08110254-Events.csv",
+    "./data/af-data/AF_Thigh-AP971728 202a 28May21 3-24pm for 16d 21h-CREA-PA08110254-Events.csv",
+    "./data/aw-data/AW_Thigh-AP971753 202a 28May21 3-53pm for 10d 52m-CREA-PA08110254-Events.csv",
+    "./data/bg1-data/thigh-AP872479 202a 5Feb21 9-50pm for 3d 22h 10m-CREA-PA08110254-Events.csv",
+    "./data/bg2-data/thigh-AP870085 202a 19Sep20 1-00pm for 2d 17m-CREA-PA08110254-Events.csv",
+    "./data/dh-data/thigh-AP870085 202a 7Dec20 10-47am for 4d 7h 7m-CREA-PA08110254-Events.csv",
+    "./data/dz-data/DZ_Thigh-AP971731 202a 28May21 3-34pm for 10d 21h 2m-CREA-PA08110254-Events.csv",
+    "./data/jm-data/JM_Thigh-AP872479 202a 28May21 10-47am for 10d-CREA-PA08110254-Events.csv",
+    "./data/js-data/thigh-AP872479 202a 29Jan21 3-15pm for 7d-CREA-PA08110254-Events.csv",
+    "./data/ls-data/LS_Thigh-AP971772 202a 28May21 3-42pm for 16d 20h 49m-CREA-PA08110254-Events.csv",
+    "./data/sg-data/SG_Thigh-AP971764 202a 2Jun21 12-09pm for 8d 6h 47m-CREA-PA08110254-Events.csv",
 ]
 
 non_wear_data_paths = [
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/af-data/AF_non-wear.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/aw-data/AW_non-wear.csv",
+    "./data/af-data/AF_non-wear.csv",
+    "./data/aw-data/AW_non-wear.csv",
     None,
     None,
     None,
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/dz-data/DZ_non-wear.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/jm-data/JM_non-wear.csv",
+    "./data/dz-data/DZ_non-wear.csv",
+    "./data/jm-data/JM_non-wear.csv",
     None,
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/ls-data/LS_non-wear.csv",
-    "C:/Users/ANS292/OneDrive - University of Salford/Code Projects/apc/data/sg-data/SG_non-wear.csv",
+    "./data/ls-data/LS_non-wear.csv",
+    "./data/sg-data/SG_non-wear.csv",
 ]
 
 for i in range(len(epoch_sizes)):
@@ -66,7 +66,7 @@ for i in range(len(epoch_sizes)):
 
         loop_posture_stack = EpochStack()
         loop_posture_stack.get_data(loop_activPal)
-        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = None, epochSize=epoch_sizes[i])
+        loop_posture_stack.create_stack(stack_type = 'pure', subset_of_data = 10, epochSize=epoch_sizes[i])
         loop_posture_stack.remove_epochs(filename = non_wear_data_paths[k])
         loop_posture_stack.show_stack()
 
