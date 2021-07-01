@@ -13,6 +13,8 @@ import sklearn.metrics as metrics
 import tensorflow as tf
 import pickle
 
+### MODEL needs updating for when altering datatset, needs to include participants id
+
 class Model(ABCModel, Plotter):
     def __init__(self):
         super().__init__()
