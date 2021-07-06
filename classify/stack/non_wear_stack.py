@@ -6,18 +6,20 @@ import numpy as np
 import math
 import datetime
 
-class EpochStack(ABCPostureStack, Helper):
+from uos_activpal.io.raw import load_activpal_data
+
+class NonWearStack(ABCPostureStack, Helper):
     def __init__(self, processing_type='epoch'):
         self.processing_type = processing_type
         self.posture_stack = None
         self.posture_stack_duration = None
-        self.posture_stack_epoch_type = None
         self.posture_stack_start_time = None
 
     def get_data(self, activity_monitor):
-        self.events_to_process = activity_monitor.event_data
+        self.raw_acceleration_data = activity_monitor.raw_data
 
     def show_stack(self):
+        ## Not edited
         print('Posture Stack')
         print('----------')
         print('Unique class values')
@@ -27,18 +29,23 @@ class EpochStack(ABCPostureStack, Helper):
         print(f"The posture stacks contains {self.posture_stack_duration} seconds of data.")
         print('----------')
 
-    def create_stack(self, stack_type, subset_of_data = None, epochSize = 15):
+    def create_non_wear_stack(self, epochSize = 1):
         """
-        stack_type = 'mixed' or 'pure'
-        subset_of_data = int number of events or None
+        epochSize = 1 for 1 second epochs
         """
-        self.posture_stack_epoch_type = stack_type
+        meta, signals = load_activpal_data(self.raw_acceleration_data)
+        total_time = meta.stop_datetime - meta.start_datetime
+        total_samples = int(total_time.total_seconds() * 20)
+        arr = np.array([meta.start_datetime + datetime.timedelta(seconds=i*0.05) for i in range(total_samples)])
+        x = signals[:total_samples,0]
+        y = signals[:total_samples,1]
+        z = signals[:total_samples,2]
+        chunk = pd.DataFrame({'Time':arr, 'X':x, 'Y':y, 'Z':z})
+
+
         if self.processing_type == 'epoch':
             event_data = pd.read_csv(self.events_to_process)
-            # subset of data for testing
-            if subset_of_data:
-                print(f'Using subset of data with just over {subset_of_data} events')
-                event_data = event_data.iloc[:subset_of_data]
+
             event_data.Time = pd.to_datetime(event_data.Time, unit='d', origin='1899-12-30')
             windowShift = epochSize/2
             startTime = event_data.Time.iloc[0]
@@ -83,15 +90,3 @@ class EpochStack(ABCPostureStack, Helper):
                         else:
                             posture_stack.iloc[i, 2] = 99
             self.posture_stack = posture_stack
-
-    def remove_epochs(self, filename = None):
-        if filename is not None:
-            file_path = filename
-            non_wear_data = pd.read_csv(file_path)
-            non_wear_data.start = pd.to_datetime(non_wear_data.start, format="%d/%m/%Y %H:%M")
-            non_wear_data.end = pd.to_datetime(non_wear_data.end, format="%d/%m/%Y %H:%M")
-            for nw_index, nw_row in non_wear_data.iterrows():
-                self.posture_stack = self.posture_stack.drop(self.posture_stack[(((self.posture_stack.Start_Time > nw_row.start) | (self.posture_stack.Finish_Time > nw_row.start)) & ((self.posture_stack.Start_Time < nw_row.end) | (self.posture_stack.Finish_Time < nw_row.end)))].index)
-            self.posture_stack = self.posture_stack.reset_index(drop=True)
-            # This may need updating as it could brake easily
-            self.posture_stack_duration = len(self.posture_stack.index) * 15 # this 15 should'nt be fixed
