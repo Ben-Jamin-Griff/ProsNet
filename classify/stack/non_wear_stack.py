@@ -146,24 +146,113 @@ class NonWearStack(ABCPostureStack, Helper):
         c_vm = np.sqrt(c_x**2 + c_y**2 + c_z**2)
 
         minutes = total_time.total_seconds()/60
-        #timestep = minutes/len(c_vm)
         time_arr = np.linspace(0, minutes, num=len(c_vm))
 
         chunk = pd.DataFrame({'Time':time_arr, 'X':c_x, 'Y':c_y, 'Z':c_z, 'VM':c_vm})
         chunk = chunk.astype(int)
 
-        breakpoint()
-
         NonWear = 0 # identifier for logical sorting
         Wear = 1 # identifier for logical sorting
 
         previousEpochClassification = 0 # The algorithm assumes non-wear prior to the start of recording
-
+        timestep = 60 # Convert seconds (epochs from Actigraph count conversion) to minutes
         amplitudeSensitivity = 15 # original value = 15 % Relates to STEP 3: threshold under which the activity counts will be automatically assumed to be non-wear if detected within a period classified as non-wear
-        timeSensitivity = 60 # original value = 5 % Relates to STEP 3: if 2 spikes of activity greater than 'amplitudeSensitivity' occur within 'timeSensitivity' minutes of each other this will be classified as wear 
-        extraCheckTime = 60
+        timeSensitivity = 5 # original value = 5 % Relates to STEP 3: if 2 spikes of activity greater than 'amplitudeSensitivity' occur within 'timeSensitivity' minutes of each other this will be classified as wear
+        NonWearData = []
 
-        if chunk:
+        def IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear, NonWear):
+            counter = 1
+            checkCountNo = 1
+            NonWearDataToAdd = NonWear
+            while checkCountNo < 20*timestep: # check the next 20 minutes of counts
+                if index + checkCountNo > len(chunk): # if the end of the data has been reached
+                    checkCountNo = 20*timestep # escape while loop
+                else:
+                    if chunk.iloc[index+checkCountNo, 4] <= amplitudeSensitivity: # if the magnitude of the counts for the next epoch in the loop is less than 'amplitudeSensitivity', keep the counter running
+                        counter += 1
+                        checkCountNo += 1
+                    else: # next epoch measures more than 'amplitudeSensitivity' counts, stop the counter and choose whether to continue through the loop or classify as wear
+                        if counter <= timeSensitivity*timestep: # it's been less than 'timeSensitivity' minutes since the last spike in activity counts
+                            NonWearDataToAdd = Wear # classify as wear
+                            checkCountNo = 20*timestep # escape while loop
+                        elif counter > timeSensitivity*timestep: # it's been more than 'timeSensitivity' minutes since the last spike in activity counts
+                            counter = 1
+                            checkCountNo += 1
+            return NonWearDataToAdd 
+
+        def check_short_classifications(NonWearData, timestep):
+            # check for classification periods lasting less than 10 mins before changing allocation. If the following period is longer then re-allocate as the opposite classification.
+            Point1 = 0
+            classification = NonWearData[0]
+            for c, val in enumerate(NonWearData[1:]):
+                if val == classification: # epoch was the same classification as the previous epoch
+                    Point2 = c # counter
+                else: # the classification has changed
+                    if c == 1: # if on 2nd epoch in recording
+                        NonWearData[c-1] = math.sqrt((classification-1)**2) # replace previous epoch with the opposite classification
+                    elif Point2-Point1 < 10*timestep: # were there less than 10 minutes of the previous classification
+                        # If yes...check length of following portion (the new classification)
+                        epochCount = 1
+                        escape = 0
+                        while escape == 0:
+                            for check in range(Point2, len(NonWearData), 1):
+                                if NonWearData[check] == math.sqrt((classification-1)**2): # if epoch is classified with the new classification
+                                    if check == len(NonWearData): # if run out of data to check
+                                        escape = 1 # stop checking
+
+                                    epochCount += 1 # keep checking the next epoch
+                                else:
+                                    escape = 1 # stop checking
+                        
+                        if epochCount < (Point2-Point1):# check if the next portion is shorter (anomaly)
+                            pass
+                        else:
+                            NonWearData[Point1:Point2] = math.sqrt((classification-1)**2) # change the classification of the previous portion
+
+                    Point1 = c # reset the counters
+                    Point2 = c # reset the counters
+                    classification = math.sqrt((classification-1)**2); # swap the reference classification
+            return NonWearData
+
+        breakpoint()
+        for index, row in chunk.iterrows():
+            if row['VM'] == 0: # If no counts were recorded for the epoch awaiting classification
+                if previousEpochClassification == 0: # Was the previous epoch classified as non wear? If yes...
+                    NonWearData.append(NonWear) # If previous epoch was classified as non-wear and no counts were recorded for this epoch - classify this epoch as non-wear
+                else: # Was the previous epoch classified as non wear? If no...
+                    if len(chunk)-index >= (20*timestep): # Relates to STEP 3 - Check if there are more than 20 mins left in the recording
+                        pointsToCheck = index+(20*timestep)-1 # Inspect the next 20 minutes of counts
+                    else: # If there are less than 20 minutes left...
+                        pointsToCheck = len(chunk)-index # Inspect all the remaining minutes of data
+                    
+                    if sum(chunk.iloc[index:pointsToCheck, 4]) == 0: # Were any counts detected during the next 20 minutes?
+                        NonWearData.append(NonWear) # If no counts were recorded then allocate this epoch as non-wear
+                    else: # If there are counts during the next 20 minutes
+                        NonWearDataToAdd = IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear, NonWear) # See how long until the next count
+                        if NonWearDataToAdd: #check this
+                            NonWearData.append(NonWearDataToAdd)
+                        if len(NonWearData) == index: # if the epoch hasn't been allocated as wear during the loop, allocate non-wear
+                            NonWearData.append(NonWear)
+
+            else: # If counts were recorded for the epoch awaiting classification
+                if previousEpochClassification == 1: # was the previous epoch classified as wear? If yes...
+                    NonWearData.append(Wear) # if the previous epoch was wear and there is still some activity, classify the current epoch as wear
+                elif row['VM'] <= amplitudeSensitivity: # If the previous epoch was classified as non-wear, and the current epoch has less than 'amplitudeSensitivity' counts, it's unlikely that they just put the monitor/prosthesis on
+                    NonWearData.append(NonWear)
+                else: # if the previous epoch was classified as non-wear but this epoch shows to have more to have more than 'amplitudeSensivity' counts recorded
+                    NonWearDataToAdd = IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear, NonWear) # See how long until the next count
+                    if NonWearDataToAdd: #check this
+                        NonWearData.append(NonWearDataToAdd)
+                    if len(NonWearData) == index: # if the epoch hasn't been allocated as wear during the loop, allocate non-wear
+                            NonWearData.append(NonWear)
+            
+            previousEpochClassification = NonWearData[-1] # reset the categorisation of the previous epoch before re-entering the loop for the next epoch
+            
+            NonWearData = check_short_classifications(NonWearData, timestep)
+
+
+        old = 0
+        if old == 1:
             event_data = pd.read_csv(self.events_to_process)
 
             event_data.Time = pd.to_datetime(event_data.Time, unit='d', origin='1899-12-30')
