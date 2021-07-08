@@ -33,9 +33,9 @@ class NonWearStack(ABCPostureStack, Helper):
         print(f"The posture stacks contains {self.posture_stack_duration} seconds of data.")
         print('----------')
 
-    def create_stack(self, epochSize = 1):
+    def create_stack(self):
         """
-        epochSize = 1 for 1 second epochs
+        ... 
         """
         meta, signals = load_activpal_data(self.raw_acceleration_data)
         total_time = meta.stop_datetime - meta.start_datetime
@@ -157,31 +157,29 @@ class NonWearStack(ABCPostureStack, Helper):
         previousEpochClassification = 0 # The algorithm assumes non-wear prior to the start of recording
         timestep = 60 # Convert seconds (epochs from Actigraph count conversion) to minutes
         amplitudeSensitivity = 15 # original value = 15 % Relates to STEP 3: threshold under which the activity counts will be automatically assumed to be non-wear if detected within a period classified as non-wear
-        timeSensitivity = 5 # original value = 5 % Relates to STEP 3: if 2 spikes of activity greater than 'amplitudeSensitivity' occur within 'timeSensitivity' minutes of each other this will be classified as wear
+        timeSensitivity = 20 # original value = 5 % Relates to STEP 3: if 2 spikes of activity greater than 'amplitudeSensitivity' occur within 'timeSensitivity' minutes of each other this will be classified as wear
+        NonWearDataToAdd = 99 # assigning this to identify any mistakes
         NonWearData = []
 
-        def IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear, NonWear):
-            counter = 1
+        def IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, investigation):
             checkCountNo = 1
-            NonWearDataToAdd = NonWear
-            while checkCountNo < 20*timestep: # check the next 20 minutes of counts
+            NonWearDataToAdd = investigation
+            while checkCountNo < 60*timestep: # check the next x minutes of counts
                 if index + checkCountNo > len(chunk): # if the end of the data has been reached
-                    checkCountNo = 20*timestep # escape while loop
+                    checkCountNo = 60*timestep # escape while loop
                 else:
                     if chunk.iloc[index+checkCountNo, 4] <= amplitudeSensitivity: # if the magnitude of the counts for the next epoch in the loop is less than 'amplitudeSensitivity', keep the counter running
-                        counter += 1
                         checkCountNo += 1
                     else: # next epoch measures more than 'amplitudeSensitivity' counts, stop the counter and choose whether to continue through the loop or classify as wear
-                        if counter <= timeSensitivity*timestep: # it's been less than 'timeSensitivity' minutes since the last spike in activity counts
+                        if checkCountNo <= timeSensitivity*timestep: # it's been less than 'timeSensitivity' minutes since the last spike in activity counts
                             NonWearDataToAdd = Wear # classify as wear
-                            checkCountNo = 20*timestep # escape while loop
-                        elif counter > timeSensitivity*timestep: # it's been more than 'timeSensitivity' minutes since the last spike in activity counts
-                            counter = 1
-                            checkCountNo += 1
+                            checkCountNo = 60*timestep # escape while loop
+                        elif checkCountNo > timeSensitivity*timestep: # it's been more than 'timeSensitivity' minutes since the last spike in activity counts
+                            checkCountNo = 60*timestep # escape while loop
             return NonWearDataToAdd 
 
         def check_short_classifications(NonWearData, timestep):
-            # check for classification periods lasting less than 10 mins before changing allocation. If the following period is longer then re-allocate as the opposite classification.
+            # check for classification periods lasting less than x mins before changing allocation. If the following period is longer then re-allocate as the opposite classification.
             Point1 = 0
             classification = NonWearData[0]
             for c, val in enumerate(NonWearData[1:]):
@@ -207,32 +205,66 @@ class NonWearStack(ABCPostureStack, Helper):
                         if epochCount < (Point2-Point1):# check if the next portion is shorter (anomaly)
                             pass
                         else:
-                            NonWearData[Point1:Point2] = math.sqrt((classification-1)**2) # change the classification of the previous portion
+                            assign = [math.sqrt((classification-1)**2)]*(Point2-Point1)
+                            NonWearData[Point1:Point2] = assign # change the classification of the previous portion
 
                     Point1 = c # reset the counters
                     Point2 = c # reset the counters
                     classification = math.sqrt((classification-1)**2); # swap the reference classification
             return NonWearData
 
-        breakpoint()
+        def check_short_non_wearclassifications(NonWearData, timestep):
+            # check for classification periods lasting less than x mins before changing allocation. If the following period is longer then re-allocate as the opposite classification.
+            Point1 = 0
+            classification = NonWearData[0]
+            for c, val in enumerate(NonWearData[1:]):
+                if val == classification: # epoch was the same classification as the previous epoch
+                    Point2 = c # counter
+                else: # the classification has changed
+                    if c == 1: # if on 2nd epoch in recording
+                        NonWearData[c-1] = math.sqrt((classification-1)**2) # replace previous epoch with the opposite classification
+                    elif Point2-Point1 < 10*timestep: # were there less than 10 minutes of the previous classification
+                        # If yes...check length of following portion (the new classification)
+                        epochCount = 1
+                        escape = 0
+                        while escape == 0:
+                            for check in range(Point2, len(NonWearData), 1):
+                                if NonWearData[check] == math.sqrt((classification-1)**2): # if epoch is classified with the new classification
+                                    if check == len(NonWearData): # if run out of data to check
+                                        escape = 1 # stop checking
+
+                                    epochCount += 1 # keep checking the next epoch
+                                else:
+                                    escape = 1 # stop checking
+                        
+                        if epochCount < (Point2-Point1):# check if the next portion is shorter (anomaly)
+                            pass
+                        else:
+                            assign = [math.sqrt((classification-1)**2)]*(Point2-Point1)
+                            NonWearData[Point1:Point2] = assign # change the classification of the previous portion
+
+                    Point1 = c # reset the counters
+                    Point2 = c # reset the counters
+                    classification = math.sqrt((classification-1)**2); # swap the reference classification
+            return NonWearData
+
         for index, row in chunk.iterrows():
             if row['VM'] == 0: # If no counts were recorded for the epoch awaiting classification
                 if previousEpochClassification == 0: # Was the previous epoch classified as non wear? If yes...
                     NonWearData.append(NonWear) # If previous epoch was classified as non-wear and no counts were recorded for this epoch - classify this epoch as non-wear
                 else: # Was the previous epoch classified as non wear? If no...
-                    if len(chunk)-index >= (20*timestep): # Relates to STEP 3 - Check if there are more than 20 mins left in the recording
-                        pointsToCheck = index+(20*timestep)-1 # Inspect the next 20 minutes of counts
-                    else: # If there are less than 20 minutes left...
+
+                    if len(chunk)-index >= (60*timestep): # Relates to STEP 3 - Check if there are more than x mins left in the recording
+                        pointsToCheck = index+(60*timestep)-1 # Inspect the next x minutes of counts
+                    else: # If there are less than x minutes left...
                         pointsToCheck = len(chunk)-index # Inspect all the remaining minutes of data
-                    
-                    if sum(chunk.iloc[index:pointsToCheck, 4]) == 0: # Were any counts detected during the next 20 minutes?
+
+                    if sum(chunk.iloc[index:pointsToCheck, 4]) == 0: # Were any counts detected during the next x minutes?
                         NonWearData.append(NonWear) # If no counts were recorded then allocate this epoch as non-wear
-                    else: # If there are counts during the next 20 minutes
-                        NonWearDataToAdd = IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear, NonWear) # See how long until the next count
-                        if NonWearDataToAdd: #check this
-                            NonWearData.append(NonWearDataToAdd)
-                        if len(NonWearData) == index: # if the epoch hasn't been allocated as wear during the loop, allocate non-wear
-                            NonWearData.append(NonWear)
+
+                    else: # If there are counts during the next x minutes
+                        NonWearDataToAdd = IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, NonWear) # See how long until the next count
+                        NonWearData.append(NonWearDataToAdd)
 
             else: # If counts were recorded for the epoch awaiting classification
                 if previousEpochClassification == 1: # was the previous epoch classified as wear? If yes...
@@ -240,62 +272,20 @@ class NonWearStack(ABCPostureStack, Helper):
                 elif row['VM'] <= amplitudeSensitivity: # If the previous epoch was classified as non-wear, and the current epoch has less than 'amplitudeSensitivity' counts, it's unlikely that they just put the monitor/prosthesis on
                     NonWearData.append(NonWear)
                 else: # if the previous epoch was classified as non-wear but this epoch shows to have more to have more than 'amplitudeSensivity' counts recorded
-                    NonWearDataToAdd = IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear, NonWear) # See how long until the next count
-                    if NonWearDataToAdd: #check this
-                        NonWearData.append(NonWearDataToAdd)
-                    if len(NonWearData) == index: # if the epoch hasn't been allocated as wear during the loop, allocate non-wear
-                            NonWearData.append(NonWear)
+                    NonWearDataToAdd = IsActivityMaintained(index, chunk, timestep, amplitudeSensitivity, timeSensitivity, Wear) # See how long until the next count
+                    NonWearData.append(NonWearDataToAdd)
             
             previousEpochClassification = NonWearData[-1] # reset the categorisation of the previous epoch before re-entering the loop for the next epoch
-            
-            NonWearData = check_short_classifications(NonWearData, timestep)
+            NonWearDataToAdd = 99
 
+        if len(NonWearData) != len(chunk):
+            print('We have a problem!')
+            breakpoint()
 
-        old = 0
-        if old == 1:
-            event_data = pd.read_csv(self.events_to_process)
+        breakpoint()
+        NonWearData = check_short_classifications(NonWearData, timestep)
+        breakpoint()
+        (sum(NonWearData)/len(NonWearData))*100
 
-            event_data.Time = pd.to_datetime(event_data.Time, unit='d', origin='1899-12-30')
-            windowShift = epochSize/2
-            startTime = event_data.Time.iloc[0]
-            self.posture_stack_start_time = startTime
-            endTime = event_data.Time.iloc[-1]
-            totalTime = ((endTime - startTime).total_seconds()) + event_data['Interval (s)'].iloc[-1]
-            self.posture_stack_duration = totalTime
-            numOfEvents = math.ceil(totalTime / windowShift)
-            column_names = ['Start_Time', 'Finish_Time', 'Event_Code']
-            posture_stack = pd.DataFrame(0, index=np.arange(numOfEvents), columns=column_names)
-            for i in range(numOfEvents):
-                self.print_progress_bar(i+1, numOfEvents, 'Creating posture stack progress:')
-                posture_stack.iloc[i, 0] = startTime + datetime.timedelta(0,windowShift*i)
-                posture_stack.iloc[i, 1] = posture_stack.iloc[i, 0] + datetime.timedelta(0,epochSize)
-                current_epoch_startTime = event_data.Time[(event_data.Time <= posture_stack.iloc[i, 0])].tail(1).item()
-                current_epoch_endTime = event_data.Time[(event_data.Time <= posture_stack.iloc[i, 1])].tail(1).item()
-                current_epoch = event_data[(event_data.Time >= current_epoch_startTime) & (event_data.Time <= current_epoch_endTime)].copy()
-                if len(current_epoch.index) == 1:
-                    posture_stack.iloc[i, 2] = current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)']
-                else:
-                    # if mixed events are required
-                    if stack_type == 'mixed':
-                        # Crop the time of the first and final events
-                        first_new_value = current_epoch['Interval (s)'].iloc[0] - ((posture_stack.iloc[i, 0] - current_epoch_startTime).total_seconds())
-                        last_new_value = ((posture_stack.iloc[i, 1] - current_epoch_endTime).total_seconds())
-                        current_epoch.iloc[0,2]= first_new_value
-                        current_epoch.iloc[-1,2] = last_new_value
-                        # Work out which is the predominent event
-                        activity_codes = current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)'].unique()
-                        activity_codes_counter = {}
-                        for code in activity_codes:
-                            activity_code_dataframe = current_epoch[current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)'] == code]
-                            activity_code_counter_value = activity_code_dataframe['Interval (s)'].sum()
-                            activity_codes_counter[code] = activity_code_counter_value
-                        max_activity_code = max(activity_codes_counter, key=activity_codes_counter.get)
-                        # Assign predominent event as the code
-                        posture_stack.iloc[i, 2] = max_activity_code
-                    # if pure events are required
-                    elif stack_type == 'pure':
-                        if np.std(current_epoch['ActivityCode (0=sedentary 1=standing 2=stepping 2.1=cycling 3.1=primary lying, 3.2=secondary lying 4=non-wear 5=travelling)'].unique()) == 0:
-                            posture_stack.iloc[i, 2] = current_epoch.iloc[0,3]
-                        else:
-                            posture_stack.iloc[i, 2] = 99
-            self.posture_stack = posture_stack
+        chunk['NonWear'] = NonWearData
+        self.posture_stack = chunk
