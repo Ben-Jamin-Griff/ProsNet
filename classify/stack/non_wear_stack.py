@@ -8,6 +8,10 @@ import datetime
 from scipy import signal
 import resampy
 
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("TkAgg")
+
 from uos_activpal.io.raw import load_activpal_data
 import warnings
 warnings.filterwarnings("ignore")

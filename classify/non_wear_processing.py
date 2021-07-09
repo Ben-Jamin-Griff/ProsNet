@@ -17,7 +17,9 @@ non_wear_stack.get_data(activPal)
 non_wear_stack.create_stack()
 non_wear_stack.show_stack()
 
-#posture_stack = EpochStack()
-#posture_stack.get_data(activPal)
-#posture_stack.create_stack(stack_type = 'pure')
-#posture_stack.show_stack()
+posture_stack = EpochStack()
+posture_stack.get_data(activPal)
+posture_stack.create_stack(stack_type = 'mixed', epochSize = 1) # creating a 1 second epoch stack to compare with non-wear
+posture_stack.show_stack()
+
+breakpoint
