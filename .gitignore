@@ -1,6 +1,7 @@
 # Data, docs & .vscode
 .vscode/
 data/
+fab-data/
 docs/
 
 # Byte-compiled / optimized / DLL files
