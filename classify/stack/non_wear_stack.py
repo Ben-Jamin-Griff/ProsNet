@@ -8,6 +8,9 @@ import datetime
 from scipy import signal
 import resampy
 
+import tkinter as tk
+from tkinter import filedialog
+
 import matplotlib.pyplot as plt
 plt.ion()
 
@@ -19,8 +22,9 @@ class NonWearStack(ABCPostureStack, Helper):
     def __init__(self, processing_type='epoch'):
         self.processing_type = processing_type
         self.posture_stack = None
-        self.posture_stack_duration = None
-        self.posture_stack_start_time = None
+        self.start_time = None
+        self.end_time = None
+        self.total_time = None
 
     def get_data(self, activity_monitor):
         self.raw_acceleration_data = activity_monitor.raw_data
@@ -29,14 +33,46 @@ class NonWearStack(ABCPostureStack, Helper):
         ## Not edited
         print('Posture Stack')
         print('----------')
-        print('Unique class values')
-        print(self.posture_stack.Event_Code.unique())
-        print('----------')
-        print('Posture stack duration')
-        print(f"The posture stacks contains {self.posture_stack_duration} seconds of data.")
+        try:
+            self.posture_stack.iloc[:,[0,4,5,6,]].plot(x='Time')
+        except:
+            self.posture_stack.iloc[:,[0,4,5,]].plot(x='Time')
         print('----------')
 
-    def create_stack(self, subset_of_data = None, min_non_wear = 20):
+    def create_validation_stack(self, filename = None):
+        if filename is not None:
+            file_path = filename
+        else:
+            root = tk.Tk()
+            root.withdraw()
+            file_path = filedialog.askopenfilename(title = "Load validation data")
+
+        non_wear_data = pd.read_csv(file_path)
+        try:
+            non_wear_data.start = pd.to_datetime(non_wear_data.start, format="%d/%m/%Y %H:%M")
+            non_wear_data.end = pd.to_datetime(non_wear_data.end, format="%d/%m/%Y %H:%M")
+        except:
+            non_wear_data.start = pd.to_datetime(non_wear_data.start, unit='d', origin='1899-12-30')
+            non_wear_data.end = pd.to_datetime(non_wear_data.end, unit='d', origin='1899-12-30')
+
+        datetime_arr = np.array([self.start_time + datetime.timedelta(seconds=i*1) for i in range(len(self.posture_stack))])
+        wear = [0]*(len(self.posture_stack))
+        chunk = pd.DataFrame({'Time':datetime_arr, 'Wear':wear})
+        for index, row in non_wear_data.iterrows():
+            # If the epoch
+            if row.end < chunk.Time.iloc[0]:
+                pass
+            # If the epoch
+            elif row.start > chunk.Time.iloc[-1]:
+                pass
+            # If the epoch
+            else:
+                chunk[(chunk.Time >= row.start) & (chunk.Time <= row.end)] = chunk[(chunk.Time >= row.start) & (chunk.Time <= row.end)].replace([0],1)
+        
+        chunk['Wear'] = [(element - 1)*-99 for element in chunk['Wear']]
+        self.posture_stack['Validation'] = chunk.Wear
+
+    def create_stack(self, subset_of_data = None, min_non_wear = 60):
         """
         subset_of_data = None (change to a percentage value of the raw acc data)
         """
@@ -157,9 +193,9 @@ class NonWearStack(ABCPostureStack, Helper):
 
         minutes = total_time.total_seconds()/60
         time_arr = np.linspace(0, minutes, num=len(c_vm))
-
-        chunk = pd.DataFrame({'Time':time_arr, 'X':c_x, 'Y':c_y, 'Z':c_z, 'VM':c_vm})
-        chunk = chunk.astype(int)
+        datetime_arr = np.array([meta.start_datetime + datetime.timedelta(seconds=i*1) for i in range(len(c_vm))])
+        chunk = pd.DataFrame({'Time':datetime_arr, 'X':c_x, 'Y':c_y, 'Z':c_z, 'VM':c_vm})
+        #chunk = chunk.astype(int)
 
         NonWear = 0 # identifier for logical sorting
         Wear = 1 # identifier for logical sorting
@@ -260,13 +296,11 @@ class NonWearStack(ABCPostureStack, Helper):
         NonWearDataChecked = check_short_classifications(NonWearData, timestep, int(timeSensitivity/3)) # 10
 
         #NonWearData = [element * 99 for element in NonWearData]
-        NonWearDataChecked = [element * -99 for element in NonWearDataChecked]
-
+        NonWearDataChecked = [element * 99 for element in NonWearDataChecked]
         chunk['NonWear'] = NonWearDataChecked
         #chunk['NonWearChecked'] = NonWearDataChecked
         #chunk['Time'] = [element / 60 for element in chunk['Time']]
-
-        #breakpoint()
-        # chunk.iloc[:,[0,4,5,6,]].plot(x='Time') # check the output using this line of code 
-
         self.posture_stack = chunk
+        self.start_time = meta.start_datetime
+        self.end_time = meta.stop_datetime
+        self.total_time = total_time
