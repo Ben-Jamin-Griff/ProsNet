@@ -7,7 +7,6 @@ import math
 import datetime
 from scipy import signal
 import resampy
-
 import tkinter as tk
 from tkinter import filedialog
 
@@ -233,12 +232,12 @@ class NonWearStack(ABCPostureStack, Helper):
             for c, classification in enumerate(NonWearData):
                 self.print_progress_bar(c, len(NonWearData), 'Checking non-wear classifications progress:')
                 if c == len(NonWearData)-1:
-                    if classification != NonWearData[c-1]:
+                    if classification != NonWearData[c-1]: # This should change the last sample if it's wrongly classified. Not sure if this is working?
                         NonWearData[c] = NonWearData[c-1]
                     return NonWearData
                 if classification == NonWearData[c+1]: # epoch was the same classification as the previous epoch
                     Point2 = c+1 # counter
-                else: # the classification has changed
+                elif NonWearData[c+1] == 0: # the classification has changed and the following classification is non wear (not checking for short wear periods)
                     Point2 = c
                     if c == 0: # if on 2nd epoch in recording
                         NonWearData[c] = math.sqrt((classification-1)**2) # replace previous epoch with the opposite classification
@@ -256,6 +255,10 @@ class NonWearStack(ABCPostureStack, Helper):
                             assign = [math.sqrt((classification-1)**2)]*((Point2-Point1)+1)
                             NonWearData[Point1:Point2+1] = assign # change the classification of the previous portion
                     Point1 = c+1 # reset the first counters
+                else:
+                    Point1 = c+1 # reset the first counters
+                    Point2 = c+1 # counter
+
             
         for index, row in chunk.iterrows():
             self.print_progress_bar(index+1, len(chunk), 'Creating non-wear stack progress:')
