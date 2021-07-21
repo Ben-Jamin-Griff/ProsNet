@@ -9,6 +9,7 @@ from scipy import signal
 import resampy
 import tkinter as tk
 from tkinter import filedialog
+import random
 
 import matplotlib.pyplot as plt
 plt.ion()
@@ -36,6 +37,9 @@ class NonWearStack(ABCPostureStack, Helper):
             self.posture_stack.iloc[:,[0,4,5,6,]].plot(x='Time')
         except:
             self.posture_stack.iloc[:,[0,4,5,]].plot(x='Time')
+
+        plt.savefig('plot' + str(random.randrange(99)) + '.png')
+        #plt.close()
         print('----------')
 
     def create_validation_stack(self, filename = None):

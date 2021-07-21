@@ -12,17 +12,31 @@ raw_data_paths = [
     "./fab-data/pilot-data-14-02-2021/pal/Pilot4HAT-FABPilo2-AP476687 202a 6Sep20 6-00pm for 8d.datx",
     "./fab-data/pilot-data-14-02-2021/pal/FAB Pilot 2-FABPilot-AP473889 202a 18Aug20 6-00pm for 6d 5h 1m.datx",
     "./fab-data/pilot-data-14-02-2021/pal/FABPilotSB-FABPilo3-AP473889 202a 6Sep20 6-00pm for 1d 23h 38m.datx",
+    "./fab-data/pilot-data-14-02-2021/pal/Pilot BTS FAB-FAB rod-AP476666 202a 28Mar20 10-40pm for 14h 3m.datx",
 ]
 
 validation_data_paths = [
     "./fab-data/pilot-data-14-02-2021/converted-diaries/Pilot4HAT_validation.csv",
     "./fab-data/pilot-data-14-02-2021/converted-diaries/FAB Pilot 2-FABPilot-AP473889 202a_validation.csv",
     "./fab-data/pilot-data-14-02-2021/converted-diaries/FABPilotSB_validation.csv",
+    "./fab-data/pilot-data-14-02-2021/converted-diaries/Pilot Notes.csv",
 ]
 
 abs_error_mins = []
 per_error = []
 per_agreement = []
+
+"""
+Things that will be useful in the outcome report.
+---
+How many non wear events were detected / recorded
+A plot to show the non-wear periods detected and reported
+
+Resources
+---
+https://stackoverflow.com/questions/51864730/python-what-is-the-process-to-create-pdf-reports-with-charts-from-a-db
+
+"""
 
 for i in range(len(raw_data_paths)):
 
@@ -31,7 +45,7 @@ for i in range(len(raw_data_paths)):
 
     non_wear_stack = NonWearStack()
     non_wear_stack.get_data(activPal)
-    non_wear_stack.create_stack(subset_of_data = 1) # percentage of data
+    non_wear_stack.create_stack(subset_of_data = None) # percentage of data
     non_wear_stack.create_validation_stack(validation_data_paths[i])
     non_wear_stack.show_stack()
 
