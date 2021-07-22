@@ -22,7 +22,7 @@ raw_data_paths = [
     "./data/jm-data/JM_Shank-AP472387 202a 28May21 10-50am for 10d.datx",
     "./data/js-data/shank-AP472387 202a 29Jan21 3-15pm for 7d.datx",
     "./data/ls-data/LS_Shin-AP971750 202a 28May21 3-46pm for 16d 20h 41m.datx",
-    ".data/sg-data/SG_Shin-AP971752 202a 2Jun21 12-12pm for 12d 7m.datx",
+    "./data/sg-data/SG_Shin-AP971752 202a 2Jun21 12-12pm for 12d 7m.datx",
 ]
 
 event_data_paths = [
