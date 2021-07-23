@@ -10,7 +10,6 @@ This script provides an example of how to load in data from an activPAL, create 
 """
 
 epoch_sizes = [5, 15, 30, 60, 120, 180]
-#epoch_sizes = [15]
 
 raw_data_paths = [
     "./data/af-data/AF_Shin-AP971770 202a 28May21 3-28pm for 16d 20h 54m.datx",
@@ -19,10 +18,15 @@ raw_data_paths = [
     "./data/bg2-data/shank-AP472387 202a 19Sep20 1-00pm for 2d 15m.datx",
     "./data/dh-data/DH_shank-AP872481 202a 7Dec20 10-45am for 4d 7h 5m.datx",
     "./data/dz-data/DZ_Shin-AP971719 202a 28May21 3-37pm for 10d 21h 3m.datx",
+    "./data/jd-data/JD_Shin-AP971756 202a 22Jun21 3-25pm for 20d.datx",
     "./data/jm-data/JM_Shank-AP472387 202a 28May21 10-50am for 10d.datx",
     "./data/js-data/shank-AP472387 202a 29Jan21 3-15pm for 7d.datx",
     "./data/ls-data/LS_Shin-AP971750 202a 28May21 3-46pm for 16d 20h 41m.datx",
+    "./data/mw-data/MW_Shin-AP971765 202a 29Jun21 11-34am for 20d.datx",
+    "./data/nb-data/NB_Shin-AP971733 202a 29Jun21 11-07am for 15d 27m.datx",
+    "./data/pk-data/PK_Shin-AP971757 202a 22Jun21 3-35pm for 13d 16h 52m.datx",
     "./data/sg-data/SG_Shin-AP971752 202a 2Jun21 12-12pm for 12d 7m.datx",
+    "./data/sr-data/SR_Shin-AP971736 202a 25Jun21 11-43am for 18d 23h 57m.datx",
 ]
 
 event_data_paths = [
@@ -32,10 +36,15 @@ event_data_paths = [
     "./data/bg2-data/thigh-AP870085 202a 19Sep20 1-00pm for 2d 17m-CREA-PA08110254-Events.csv",
     "./data/dh-data/thigh-AP870085 202a 7Dec20 10-47am for 4d 7h 7m-CREA-PA08110254-Events.csv",
     "./data/dz-data/DZ_Thigh-AP971731 202a 28May21 3-34pm for 10d 21h 2m-CREA-PA08110254-Events.csv",
+    "./data/jd-data/JD_Thigh-AP971771 202a 22Jun21 3-22pm for 20d-CREA-PA08110254-Events.csv",
     "./data/jm-data/JM_Thigh-AP872479 202a 28May21 10-47am for 10d-CREA-PA08110254-Events.csv",
     "./data/js-data/thigh-AP872479 202a 29Jan21 3-15pm for 7d-CREA-PA08110254-Events.csv",
     "./data/ls-data/LS_Thigh-AP971772 202a 28May21 3-42pm for 16d 20h 49m-CREA-PA08110254-Events.csv",
+    "./data/mw-data/MW_Thigh-AP971720 202a 29Jun21 11-31am for 20d-CREA-PA08110254-Events.csv",
+    "./data/nb-data/NB_Thigh-AP971748 202a 29Jun21 11-05am for 15d 31m-CREA-PA08110254-Events.csv",
+    "./data/pk-data/PK_Thigh-AP971722 202a 22Jun21 3-32pm for 5d 14h 35m-CREA-PA08110254-Events.csv",
     "./data/sg-data/SG_Thigh-AP971764 202a 2Jun21 12-09pm for 8d 6h 47m-CREA-PA08110254-Events.csv",
+    "./data/sr-data/SR_Thigh-AP971766 202a 25Jun21 11-40am for 18d 23h 58m-CREA-PA08110254-Events.csv",
 ]
 
 non_wear_data_paths = [
@@ -45,10 +54,15 @@ non_wear_data_paths = [
     None,
     None,
     "./data/dz-data/DZ_non-wear.csv",
+    "./data/jd-data/JD_non-wear.csv",
     "./data/jm-data/JM_non-wear.csv",
     None,
     "./data/ls-data/LS_non-wear.csv",
+    "./data/mw-data/MW_non-wear.csv",
+    "./data/nb-data/NB_non-wear.csv",
+    "./data/pk-data/PK_non-wear.csv",
     "./data/sg-data/SG_non-wear.csv",
+    "./data/sr-data/SR_non-wear.csv",
 ]
 
 for i in range(len(epoch_sizes)):
