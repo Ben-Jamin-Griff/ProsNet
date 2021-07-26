@@ -7,8 +7,8 @@ echo "The script starts here."
 sudo apt-get update 
 
 ## Install pip
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3.8 get-pip.py
+#curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+#python3.8 get-pip.py
 sudo apt install python3-pip
 
 ## Install python-tk
