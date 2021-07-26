@@ -32,5 +32,10 @@ source venv/bin/activate
 ## Install requirements into VENV
 pip install -r requirements.txt
 
-## Running the script
+## Running the script in the shell
 python3 classify/shallow_paper_processing.py
+
+## Running the script in the background (to close the shell)
+nohup python3 classify/shallow_paper_processing.py &
+## Check script is still running
+ps -A
