@@ -95,16 +95,3 @@ for i in range(len(epoch_sizes)):
 
     # Saving feature set
     feature_set.save_set('set_size_' + str(epoch_sizes[i]), 'feature')
-    
-    # Old code for creating a model
-    #model = ShallowModel()
-    #model.get_data(feature_set)
-    #model.get_postures(feature_set)
-    #model.show_set()
-    #model.reassign_classes()
-    #model.remove_classes(4)
-    #model.remove_classes(5)
-    #object_name = 'knn_epoch_window_' + str(epoch_sizes[i])
-    #model.create_model('knn', save_model_results = object_name)
-
-    #https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html
