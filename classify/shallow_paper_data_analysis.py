@@ -42,7 +42,7 @@ feature_set = []
 posture_set = []
 participant_ids = []
 
-EPOCH_SIZES = [5, 15, 60, 120, 180]
+EPOCH_SIZES = [5, 15, 30, 60, 120, 180]
 
 for epoch_size in EPOCH_SIZES:
   feature_set.append(np.load(file_dir + 'set_size_' + str(epoch_size) + '_feature_set.npy'))
@@ -259,6 +259,61 @@ for count, epoch in enumerate(EPOCH_SIZES):
   analysis_set['posture code'] = analysis_posture_set
   analysis_set['participant id'] = analysis_participant_ids
 
+  # Data split plots
+  cmap_data = plt.cm.Paired
+  cmap_cv = plt.cm.coolwarm
+
+  def visualize_groups(classes, groups, name):
+      # Visualize dataset groups
+      fig, ax = plt.subplots(figsize=(10,6))
+      ax.scatter(range(len(groups)),  [.5] * len(groups), c=groups, marker='_',
+                lw=50)#, cmap=cmap_data)
+      ax.scatter(range(len(groups)),  [3.5] * len(groups), c=classes, marker='_',
+                lw=50)#, cmap='Set1')
+      ax.set(ylim=[-1, 5], yticks=[.5, 3.5],
+            yticklabels=['Data\ngroups', 'Data\nclasses'], xlabel="Sample index")
+      plt.savefig('Data_Split_epoch_' + str(epoch) + '_.png')
+      plt.close()
+
+  visualize_groups(analysis_set['posture code'].sort_values(), analysis_set['participant id'], 'no groups')
+
+  def plot_cv_indices(cv, X, y, group, ax, n_splits, lw=10):
+      """Create a sample plot for indices of a cross-validation object."""
+
+      # Generate the training/testing visualizations for each CV split
+      for ii, (tr, tt) in enumerate(cv.split(X=X, y=y, groups=group)):
+          # Fill in indices with the training/test groups
+          indices = np.array([np.nan] * len(X))
+          indices[tt] = 1
+          indices[tr] = 0
+
+          # Visualize the results
+          ax.scatter(range(len(indices)), [ii + .5] * len(indices),
+                    c=indices, marker='_', lw=lw, cmap=cmap_cv,
+                    vmin=-.2, vmax=1.2);
+
+      # Plot the data classes and groups at the end
+      ax.scatter(range(len(X)), [ii + 1.5] * len(X),
+                c=y, marker='_', lw=lw, cmap=cmap_data);
+
+      ax.scatter(range(len(X)), [ii + 2.5] * len(X),
+                c=group, marker='_', lw=lw, cmap=cmap_data);
+
+      # Formatting
+      yticklabels = list(range(n_splits)) + ['class', 'group']
+      ax.set(yticks=np.arange(n_splits+2) + .5, yticklabels=yticklabels,
+            xlabel='Sample index', ylabel="CV iteration",
+            ylim=[n_splits+2.2, -.2]) #xlim=[0, 100]
+      ax.set_title('{}'.format(type(cv).__name__), fontsize=15)
+      plt.savefig('Data_Split_KFold_epoch_' + str(epoch) + '_.png')
+      plt.close()
+      return ax
+
+  fig, ax = plt.subplots(figsize=(10,6))
+  #cv = KFold(n_splits=folds, random_state=None, shuffle=False)
+  cv = StratifiedKFold(n_splits=10, random_state=None, shuffle=False)
+  plot_cv_indices(cv, analysis_set.drop(labels=['posture code'], axis=1), analysis_set['posture code'], analysis_set['participant id'], ax, n_splits=10)
+
   # Train test split
 
   print('Running test-train split analysis')
@@ -342,6 +397,21 @@ for count, epoch in enumerate(EPOCH_SIZES):
     print('Classification report (train test split) - ' + title, file=f)
     print(classification_report(y_test, predictions.astype(int)), file=f)
 
+    matrix = metrics.confusion_matrix(y_test, predictions.astype(int), normalize ='true')
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(matrix,
+                cmap='coolwarm',
+                linecolor='white',
+                linewidths=1,
+                xticklabels=LABELS,
+                yticklabels=LABELS,
+                annot=True)
+
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.savefig('Confusion_matrix_' + title + '_epoch_' + str(epoch) + '.png')
+    plt.close()
+
   # Creating a new training set for the K Fold
 
   X = analysis_set.drop(labels=['posture code', 'participant id'], axis=1)
@@ -391,6 +461,20 @@ for count, epoch in enumerate(EPOCH_SIZES):
 
     print('Classification report (K Fold) - ' + title, file=f)
     print(classification_report(y, y_pred), file=f)
+
+    conf_mat = confusion_matrix(y, y_pred, normalize ='true')
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(conf_mat,
+                cmap='coolwarm',
+                linecolor='white',
+                linewidths=1,
+                xticklabels=LABELS,
+                yticklabels=LABELS,
+                annot=True)
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.savefig('Confusion_matrix_' + title + '_KFlod_epoch_' + str(epoch) + '.png')
+    plt.close()
   
   print('Finished analysis on epoch size ' + str(epoch))
   f.close()
