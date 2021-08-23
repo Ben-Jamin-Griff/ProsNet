@@ -28,6 +28,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
+from imblearn.under_sampling import RandomUnderSampler
+from collections import Counter
+
 """
 Running shallow paper analysis
 
@@ -83,6 +86,18 @@ for count, epoch in enumerate(EPOCH_SIZES):
     feature_set[count] = feature_set[count][keep_idx]
     participant_ids[count] = participant_ids[count][keep_idx]
 
+  # Balance classes
+  
+  #smallest_class = min(np.bincount(posture_set[count].astype(int)))
+  undersample = RandomUnderSampler(sampling_strategy='majority')
+  print('Posture count for each class before balancing')
+  print(Counter(posture_set[count]))
+  feature_set[count], posture_set[count] = undersample.fit_resample(feature_set[count], posture_set[count])
+  feature_set[count], posture_set[count] = undersample.fit_resample(feature_set[count], posture_set[count])
+  feature_set[count], posture_set[count] = undersample.fit_resample(feature_set[count], posture_set[count])
+  print('Posture count for each class after balancing')
+  print(Counter(posture_set[count]))
+  
  #print('Number of post event codes for epoch ' + str(epoch))
   #print(len(posture_set[count]))
 
@@ -257,7 +272,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
   # Adding in the posture codes and participant ids
 
   analysis_set['posture code'] = analysis_posture_set
-  analysis_set['participant id'] = analysis_participant_ids
+  #####analysis_set['participant id'] = analysis_participant_ids
 
   # Data split plots
   cmap_data = plt.cm.Paired
@@ -275,7 +290,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
       plt.savefig('Data_Split_epoch_' + str(epoch) + '_.png')
       plt.close()
 
-  visualize_groups(analysis_set['posture code'].sort_values(), analysis_set['participant id'], 'no groups')
+  #####visualize_groups(analysis_set['posture code'].sort_values(), analysis_set['participant id'], 'no groups')
 
   def plot_cv_indices(cv, X, y, group, ax, n_splits, lw=10):
       """Create a sample plot for indices of a cross-validation object."""
@@ -312,7 +327,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
   fig, ax = plt.subplots(figsize=(10,6))
   #cv = KFold(n_splits=folds, random_state=None, shuffle=False)
   cv = StratifiedKFold(n_splits=10, random_state=None, shuffle=False)
-  plot_cv_indices(cv, analysis_set.drop(labels=['posture code'], axis=1), analysis_set['posture code'], analysis_set['participant id'], ax, n_splits=10)
+  #####plot_cv_indices(cv, analysis_set.drop(labels=['posture code'], axis=1), analysis_set['posture code'], analysis_set['participant id'], ax, n_splits=10)
 
   # Train test split
 
@@ -320,7 +335,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
   print('Running test-train split analysis', file=f)
 
   X_train, X_test, y_train, y_test = train_test_split(
-      analysis_set.drop(labels=['posture code', 'participant id'], axis=1),
+      analysis_set.drop(labels=['posture code'], axis=1), #, 'participant id'
       analysis_set['posture code'],
       test_size=0.2,
       random_state=42)
@@ -414,7 +429,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
 
   # Creating a new training set for the K Fold
 
-  X = analysis_set.drop(labels=['posture code', 'participant id'], axis=1)
+  X = analysis_set.drop(labels=['posture code'], axis=1) #, 'participant id'
   y = analysis_set['posture code']
 
   print('Running K Fold analysis')
