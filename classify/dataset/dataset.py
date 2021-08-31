@@ -16,7 +16,7 @@ class Dataset(ABCDataset, Helper):
         self.posture_stack_start_time = None
 
     def show_set(self):
-        print('Engineering Set')
+        print('Dataset')
         print('----------')
         if self.posture_stack_epoch_type == 'mixed':
             print('Extracted Set')
@@ -46,9 +46,12 @@ class Dataset(ABCDataset, Helper):
         classes_to_keep = self.dataset[1] != 99
         for classes in classes_to_remove:
             classes_to_keep = classes_to_keep + (self.dataset[1] != classes)
-        self.dataset[1] = self.dataset[1][classes_to_keep]
         self.dataset[0] = self.dataset[0][classes_to_keep]
-        self.dataset[2] = self.dataset[2][classes_to_keep]
+        self.dataset[1] = self.dataset[1][classes_to_keep]
+        try: # This is in as a quick fix for the old engineering set code which doesn't currently use R.B's import function or track participants id's
+            self.dataset[2] = self.dataset[2][classes_to_keep]
+        except:
+            pass
 
     def save_set(self, filename, type_of_set):
         print('...saving set')

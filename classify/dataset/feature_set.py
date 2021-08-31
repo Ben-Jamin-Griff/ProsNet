@@ -38,10 +38,10 @@ class FeatureSet(Dataset, Plotter):
                     # If the epoch start time is in the dataset and the end time is in the dataset then extract the data
                     elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time <= chunk.Time.iloc[-1]:
                         current_epoch = chunk[(chunk.Time >= row.Start_Time) & (chunk.Time <= row.Finish_Time)].copy()
-                    # If the start time is in the dataset but the end time is not in the dataset then load in the next dataset
+                    # If the start time is in the dataset but the end time is not in the dataset then break to loop
                     elif row.Start_Time >= chunk.Time.iloc[0] and row.Finish_Time > chunk.Time.iloc[-1]:
                         break
-                    # If the start time is greater than the last value in the dataset then load in the next dataset 
+                    # If the start time is greater than the last value in the dataset then break the loop
                     elif row.Start_Time > chunk.Time.iloc[-1]:
                         break
 
@@ -211,39 +211,5 @@ class FeatureSet(Dataset, Plotter):
             spower_feats=np.append(spower_feats, sum(p[mask]))
         feature_array=np.append(feature_array, spower_feats)
 
-        # Return the feature array
-        return feature_array
-
-    def create_feature_array_opti(self, current_epoch):
-        xData = current_epoch['X'].to_numpy() #self.plot_signal(xData, 'xData')
-        yData = current_epoch['Y'].to_numpy()
-        zData = current_epoch['Z'].to_numpy()
-
-        # Filter the data
-        fc = 5  # Cut-off frequency of the filter
-        w = fc / (20 / 2) # Normalize the frequency
-        b, a = signal.butter(5, w, 'low')
-        xDataFilt = signal.filtfilt(b, a, xData)
-        yDataFilt = signal.filtfilt(b, a, yData)
-        zDataFilt = signal.filtfilt(b, a, zData)
-        
-        # Calculate vector magnitude
-        vmData = np.sqrt(xDataFilt**2 + yDataFilt**2 + zDataFilt**2)
-
-        feature_array = []
-        # Signal magnitude area
-        feature_array=np.append(feature_array, np.trapz(vmData))
-        # Autocorrelation features for all three acceleration components (3 each): height of main peak; height and position of second peak - Not sure this is right?
-        autocorrelation = np.correlate(xDataFilt, xDataFilt, mode='full')
-        autocorrelation = autocorrelation[len(xDataFilt)-1:][0]
-        feature_array=np.append(feature_array, autocorrelation)
-
-        autocorrelation = np.correlate(yDataFilt, yDataFilt, mode='full')
-        autocorrelation = autocorrelation[len(yDataFilt)-1:][0]
-        feature_array=np.append(feature_array, autocorrelation)
-
-        autocorrelation = np.correlate(vmData, vmData, mode='full')
-        autocorrelation = autocorrelation[len(vmData)-1:][0]
-        feature_array=np.append(feature_array, autocorrelation)
         # Return the feature array
         return feature_array
