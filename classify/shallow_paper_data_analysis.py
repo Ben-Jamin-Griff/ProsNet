@@ -41,7 +41,7 @@ g = open("dataset_description.txt", "a")
 
 # Collecting the datasets
 
-file_dir = './apc-data/processed-5000-events/'
+file_dir = './apc-data/processed-15000-events/'
 
 feature_set = []
 posture_set = []
