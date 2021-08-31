@@ -37,6 +37,8 @@ Running shallow paper analysis
 This script does the data analysis for the shallow paper...
 """
 
+g = open("dataset_description.txt", "a")
+
 # Collecting the datasets
 
 file_dir = './apc-data/processed-5000-events/'
@@ -54,10 +56,6 @@ for epoch_size in EPOCH_SIZES:
 
 # Combining similar activity codes
 
-#for epoch, dataset in enumerate(posture_set):
-  #print('Original event codes for epoch ' + str(EPOCH_SIZES[epoch]))
-  #print(np.unique(dataset))
-
 for epoch, dataset in enumerate(posture_set):
   for count, value in enumerate(dataset):
     if dataset[count] == 2.1:
@@ -70,15 +68,17 @@ for epoch, dataset in enumerate(posture_set):
       continue
   posture_set[epoch] = dataset
 
-#for epoch, dataset in enumerate(posture_set):
-  #print('New event codes for epoch ' + str(EPOCH_SIZES[epoch]))
-  #print(np.unique(dataset))
+for epoch, dataset in enumerate(posture_set):
+  print('Quantity of data in in epoch ' + str(EPOCH_SIZES[epoch]), file=g)
+  #print(str(len(dataset)*EPOCH_SIZES[epoch]) + ' seconds')
+  #print(str((len(dataset)*EPOCH_SIZES[epoch])/60) + ' minutes')
+  print(str((len(dataset)*EPOCH_SIZES[epoch])/60/60) + ' hours', file=g)
+  #print(str((len(dataset)*EPOCH_SIZES[epoch])/60/60/24) + ' days')
 
 # Removing specific activity codes from dataset
 
 for count, epoch in enumerate(EPOCH_SIZES):
-  #print('Number of pre event codes for epoch ' + str(epoch))
-  #print(len(posture_set[count]))
+  print('Event code analysis for epoch ' + str(epoch), file=g)
 
   for class_to_remove in [4,5]:
     keep_idx = posture_set[count] != class_to_remove
@@ -87,24 +87,33 @@ for count, epoch in enumerate(EPOCH_SIZES):
     participant_ids[count] = participant_ids[count][keep_idx]
 
   # Balance classes
-  
-  #smallest_class = min(np.bincount(posture_set[count].astype(int)))
+
+  feature_set_temporary = feature_set[count]
+  posture_set_temporary = posture_set[count]
+  participant_ids_temporary =participant_ids[count]
+  feature_ids_combo = np.column_stack((feature_set_temporary, participant_ids_temporary))
+
   undersample = RandomUnderSampler(sampling_strategy='majority')
-  print('Posture count for each class before balancing')
-  print(Counter(posture_set[count]))
-  feature_set[count], posture_set[count] = undersample.fit_resample(feature_set[count], posture_set[count])
-  feature_set[count], posture_set[count] = undersample.fit_resample(feature_set[count], posture_set[count])
-  feature_set[count], posture_set[count] = undersample.fit_resample(feature_set[count], posture_set[count])
-  print('Posture count for each class after balancing')
-  print(Counter(posture_set[count]))
-  
- #print('Number of post event codes for epoch ' + str(epoch))
-  #print(len(posture_set[count]))
+  print('Posture count for each class before balancing', file=g)
+  print(Counter(posture_set_temporary), file=g)
+  feature_ids_combo, posture_set_temporary = undersample.fit_resample(feature_ids_combo, posture_set_temporary)
+  feature_ids_combo, posture_set_temporary = undersample.fit_resample(feature_ids_combo, posture_set_temporary)
+  feature_ids_combo, posture_set_temporary = undersample.fit_resample(feature_ids_combo, posture_set_temporary)
+  print('Posture count for each class after balancing', file=g)
+  print(Counter(posture_set_temporary), file=g)
+
+  participant_ids_temporary = feature_ids_combo[:, -1]
+  feature_set_temporary = np.delete(feature_ids_combo, -1, axis=1)
+
+  feature_set[count] = feature_set_temporary
+  posture_set[count] = posture_set_temporary
+  participant_ids[count] = participant_ids_temporary.astype(int)
 
 # How many participants are in the datasets
 
-print('Number of participants')
-print(len(np.unique(participant_ids[0])))
+print('Number of participants', file=g)
+print(len(np.unique(participant_ids[0])), file=g)
+g.close()
 
 for count, epoch in enumerate(EPOCH_SIZES):
 
@@ -245,8 +254,8 @@ for count, epoch in enumerate(EPOCH_SIZES):
 
   print('Number of correlated features:', file=f)
   print(len(correlated_features), file=f)
-  #print('Correlated feature list:')
-  #print(correlated_features)
+  print('Correlated feature list:', file=f)
+  print(correlated_features, file=f)
 
   analysis_set.drop(labels=correlated_features, axis=1, inplace=True)
 
@@ -260,9 +269,9 @@ for count, epoch in enumerate(EPOCH_SIZES):
 
   print('Number of quasi-constant features:', file=f)
   print(len(qconstant_columns), file=f)
-  #print('Quasi-constant feature list:')
+  print('Quasi-constant feature list:', file=f)
   qconstant_columns = set(qconstant_columns)
-  #print(qconstant_columns)
+  print(qconstant_columns, file=f)
 
   analysis_set.drop(labels=qconstant_columns, axis=1, inplace=True)
 
@@ -272,13 +281,13 @@ for count, epoch in enumerate(EPOCH_SIZES):
   # Adding in the posture codes and participant ids
 
   analysis_set['posture code'] = analysis_posture_set
-  #####analysis_set['participant id'] = analysis_participant_ids
+  analysis_set['participant id'] = analysis_participant_ids
 
   # Data split plots
   cmap_data = plt.cm.Paired
   cmap_cv = plt.cm.coolwarm
 
-  def visualize_groups(classes, groups, name):
+  def visualize_groups(classes, groups):
       # Visualize dataset groups
       fig, ax = plt.subplots(figsize=(10,6))
       ax.scatter(range(len(groups)),  [.5] * len(groups), c=groups, marker='_',
@@ -290,7 +299,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
       plt.savefig('Data_Split_epoch_' + str(epoch) + '_.png')
       plt.close()
 
-  #####visualize_groups(analysis_set['posture code'].sort_values(), analysis_set['participant id'], 'no groups')
+  visualize_groups(analysis_set['posture code'].sort_values(), analysis_set['participant id'].sort_values())
 
   def plot_cv_indices(cv, X, y, group, ax, n_splits, lw=10):
       """Create a sample plot for indices of a cross-validation object."""
@@ -326,21 +335,48 @@ for count, epoch in enumerate(EPOCH_SIZES):
 
   fig, ax = plt.subplots(figsize=(10,6))
   #cv = KFold(n_splits=folds, random_state=None, shuffle=False)
-  cv = StratifiedKFold(n_splits=10, random_state=None, shuffle=False)
-  #####plot_cv_indices(cv, analysis_set.drop(labels=['posture code'], axis=1), analysis_set['posture code'], analysis_set['participant id'], ax, n_splits=10)
+  n_splits = 10
+  cv = StratifiedKFold(n_splits=n_splits, random_state=None, shuffle=False)
+  #n_splits = len(np.unique(participant_ids[0]))
+  #cv = GroupKFold(n_splits=n_splits)
+  
+  plot_cv_indices(cv, analysis_set.drop(labels=['posture code'], axis=1), analysis_set['posture code'], analysis_set['participant id'], ax, n_splits=n_splits)
 
+  # Model list
+
+  models = (KNeighborsClassifier(n_neighbors=10),
+            KNeighborsClassifier(n_neighbors=10),
+            svm.SVC(kernel='rbf', gamma=1, C=1),
+            RandomForestClassifier(n_estimators=30),
+            ExtraTreesClassifier(n_estimators=30),
+            LogisticRegression(solver='sag', max_iter=100, multi_class='ovr'),
+            GaussianNB(),
+            QuadraticDiscriminantAnalysis(),
+            )
+
+  model_titles = ('KNN',
+                  'KNN (LDA)',
+                  'SVM',
+                  'RF',
+                  'Extra Trees RF',
+                  'Log Reg',
+                  'Naive Bayes',
+                  'Quad Discriminant Analysis',
+                  )
+
+  LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
+
+  '''
   # Train test split
 
   print('Running test-train split analysis')
   print('Running test-train split analysis', file=f)
 
   X_train, X_test, y_train, y_test = train_test_split(
-      analysis_set.drop(labels=['posture code'], axis=1), #, 'participant id'
+      analysis_set.drop(labels=['posture code', 'participant id'], axis=1),
       analysis_set['posture code'],
       test_size=0.2,
       random_state=42)
-
-  LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
 
   # Displaying class balance
 
@@ -368,28 +404,6 @@ for count, epoch in enumerate(EPOCH_SIZES):
 
   LDA = LinearDiscriminantAnalysis(n_components=2)
   LDA.fit(X_train, y_train)
-
-  # Model list
-
-  models = (KNeighborsClassifier(n_neighbors=10),
-            KNeighborsClassifier(n_neighbors=10),
-            svm.SVC(kernel='rbf', gamma=1, C=1),
-            RandomForestClassifier(n_estimators=30),
-            ExtraTreesClassifier(n_estimators=30),
-            LogisticRegression(solver='sag', max_iter=100, multi_class='ovr'),
-            GaussianNB(),
-            QuadraticDiscriminantAnalysis(),
-            )
-
-  model_titles = ('KNN',
-                  'KNN (LDA)',
-                  'SVM',
-                  'RF',
-                  'Extra Trees RF',
-                  'Log Reg',
-                  'Naive Bayes',
-                  'Quad Discriminant Analysis',
-                  )
 
   # Assess model
 
@@ -427,9 +441,10 @@ for count, epoch in enumerate(EPOCH_SIZES):
     plt.savefig('Confusion_matrix_' + title + '_epoch_' + str(epoch) + '.png')
     plt.close()
 
+  '''
   # Creating a new training set for the K Fold
 
-  X = analysis_set.drop(labels=['posture code'], axis=1) #, 'participant id'
+  X = analysis_set.drop(labels=['posture code', 'participant id'], axis=1)
   y = analysis_set['posture code']
 
   print('Running K Fold analysis')
@@ -450,11 +465,14 @@ for count, epoch in enumerate(EPOCH_SIZES):
   # Transform list for K Fold
 
   LDA = LinearDiscriminantAnalysis(n_components=2)
-  LDA.fit(X_train, y_train)
+  LDA.fit(X, y)
 
   # Assess models K Fold
 
-  cv = StratifiedKFold(n_splits=10, random_state=None, shuffle=False)
+  n_splits = 10
+  cv = StratifiedKFold(n_splits=n_splits, random_state=None, shuffle=False)
+  #n_splits = len(np.unique(participant_ids[0]))
+  #cv = GroupKFold(n_splits=n_splits)
 
   fit_models = []
   for clf, title in zip(models, model_titles):
@@ -468,11 +486,11 @@ for count, epoch in enumerate(EPOCH_SIZES):
   for clf, title in zip(fit_models, model_titles):
     print('Evaluating model ' + title)
     if title == 'KNN (LDA)':
-      scores = cross_val_score(clf, LDA.transform(X), y, cv=cv)
-      y_pred = cross_val_predict(clf, LDA.transform(X), y, cv=cv)
+      scores = cross_val_score(clf, LDA.transform(X), y, groups = analysis_set['participant id'], cv=cv)
+      y_pred = cross_val_predict(clf, LDA.transform(X), y, groups = analysis_set['participant id'], cv=cv)
     else:
-      scores = cross_val_score(clf, X, y, cv=cv)
-      y_pred = cross_val_predict(clf, X, y, cv=cv)
+      scores = cross_val_score(clf, X, y, groups = analysis_set['participant id'], cv=cv)
+      y_pred = cross_val_predict(clf, X, y, groups = analysis_set['participant id'], cv=cv)
 
     print('Classification report (K Fold) - ' + title, file=f)
     print(classification_report(y, y_pred), file=f)
