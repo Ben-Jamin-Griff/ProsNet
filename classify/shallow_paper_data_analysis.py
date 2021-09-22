@@ -41,7 +41,7 @@ g = open("dataset_description.txt", "a")
 
 # Collecting the datasets
 
-file_dir = './apc-data/processed-15000-events/'
+file_dir = './apc-data/processed-5000-events/'
 
 feature_set = []
 posture_set = []
@@ -364,7 +364,7 @@ for count, epoch in enumerate(EPOCH_SIZES):
                   'Quad Discriminant Analysis',
                   )
 
-  LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
+  LABELS = ['Sitting', 'Standing', 'Stepping', 'Lying']
 
   '''
   # Train test split
@@ -496,17 +496,22 @@ for count, epoch in enumerate(EPOCH_SIZES):
     print(classification_report(y, y_pred), file=f)
 
     conf_mat = confusion_matrix(y, y_pred, normalize ='true')
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(8, 6))
     sns.heatmap(conf_mat,
                 cmap='coolwarm',
                 linecolor='white',
                 linewidths=1,
                 xticklabels=LABELS,
                 yticklabels=LABELS,
-                annot=True)
-    plt.ylabel('True Label')
-    plt.xlabel('Predicted Label')
-    plt.savefig('Confusion_matrix_' + title + '_KFlod_epoch_' + str(epoch) + '.png')
+                annot=True,
+                annot_kws={'size':14})
+    plt.xticks(fontsize=16)
+    plt.xticks(rotation = 45)
+    plt.yticks(fontsize=16)
+    plt.yticks(rotation = 45)
+    plt.ylabel('True Label', fontsize=16)
+    plt.xlabel('Predicted Label', fontsize=16)
+    plt.savefig('Confusion_matrix_' + title + '_KFlod_epoch_' + str(epoch) + '.png', bbox_inches='tight')
     plt.close()
   
   print('Finished analysis on epoch size ' + str(epoch))

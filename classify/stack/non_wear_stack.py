@@ -77,7 +77,7 @@ class NonWearStack(ABCPostureStack, Helper):
 
     def create_stack(self, subset_of_data = None, min_non_wear = 60):
         """
-        subset_of_data = None (change to a percentage value of the raw acc data)
+        subset_of_data = None (assign a percentage value of the raw acc data)
         """
         meta, signals = load_activpal_data(self.raw_acceleration_data)
         total_time = meta.stop_datetime - meta.start_datetime
@@ -262,8 +262,7 @@ class NonWearStack(ABCPostureStack, Helper):
                 else:
                     Point1 = c+1 # reset the first counters
                     Point2 = c+1 # counter
-
-            
+    
         for index, row in chunk.iterrows():
             self.print_progress_bar(index+1, len(chunk), 'Creating non-wear stack progress:')
             if row['VM'] == 0: # If no counts were recorded for the epoch awaiting classification
@@ -297,7 +296,7 @@ class NonWearStack(ABCPostureStack, Helper):
             NonWearDataToAdd = 999
 
         if len(NonWearData) != len(chunk):
-            print('We have a problem!')
+            print('We have a problem! The non wear length does not match the size of the data.')
             breakpoint()
 
         NonWearDataChecked = check_short_classifications(NonWearData, timestep, int(timeSensitivity/3)) # 10
