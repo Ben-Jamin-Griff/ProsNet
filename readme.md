@@ -90,7 +90,7 @@ This is an example of how to list things you need to use the software and how to
    ```
 3. Move into repo
    ```sh
-   cd Prosnet
+   cd ProsNet
    ```  
 4. Install Python packages
    ```sh
