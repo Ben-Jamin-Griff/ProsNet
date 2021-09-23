@@ -88,11 +88,15 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/Ben-Jamin-Griff/ProsNet.git
    ```
-3. Install Python packages
+3. Move into repo
+   ```sh
+   cd Prosnet
+   ```  
+4. Install Python packages
    ```sh
    pip install -r requirements.txt
    ```
-4. Run the example script
+5. Run the example script
    ```sh
    python3 examples/setup_example.py
    ```
