@@ -54,14 +54,14 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-This respository contains the software and models developed for *"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (pre-print)*.
+This respository contains the software and models developed for *"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (preprint)*.
 
 Here are the main uses of this software:
 * Process shank activPAL accelerometer data to estimate daily physical behaviour postures
 * Process shank activPAL accelerometer data with thigh activPAL event data for creating labeled datasets
-* Re-create the model development process used in Griffiths et al. 2021
+* Re-create the model development process used in Griffiths et al. (2021)
 * Experiment with new model development methods TBA
-* Eestimate non-wear periods from activPAL accelerometer data - algorithm validation ongoing
+* Estimate non-wear periods from activPAL accelerometer data - algorithm validation ongoing
 
 This repository is constantly being updated. Check back for more info...
 
@@ -129,8 +129,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 👤 **Benjamin Griffiths**
 
-- Twitter: [@Ben_Jamin_Griff](https://twitter.com/ben_jamin_griff)
-- Github: [@Ben_Jamin_Griff](https://github.com/ben_jamin_griff)
+- [Twitter] (https://twitter.com/ben_jamin_griff)
+- [Github] (https://github.com/ben_jamin_griff)
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
