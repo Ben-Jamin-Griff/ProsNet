@@ -78,26 +78,19 @@ To get a local copy up and running follow these simple example steps.
 
 This is an example of how to list things you need to use the software and how to install them.
 
-* python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/#how-to-install-python-on-windows)
-
-  ```sh
-  npm install npm@latest -g
-  ```
+* python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/)
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+1. Open your terminal / shell and navigate to the directory where you want to install this software
+
 2. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/Ben-Jamin-Griff/ProsNet.git
    ```
-3. Install NPM packages
+3. Install Python packages
    ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```JS
-   const API_KEY = 'ENTER YOUR API';
+   pip install -r requirements.txt
    ```
 
 <!-- USAGE EXAMPLES -->
