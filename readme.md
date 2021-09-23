@@ -77,12 +77,12 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* python & pip
+
+* python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/#how-to-install-python-on-windows)
+
   ```sh
   npm install npm@latest -g
   ```
-
-
 
 ### Installation
 
