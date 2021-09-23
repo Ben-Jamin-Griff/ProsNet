@@ -49,18 +49,19 @@
 </details>
 
 
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-This respository contains the software and models developed from the methods in *"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (pre-print)*.
+This respository contains the software and models developed for *"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (pre-print)*.
 
 Here are the main uses of this software:
-* Make great models
-* Process data
-* Analyse non-wear
+* Process shank activPAL accelerometer data to estimate daily physical behaviour postures
+* Process shank activPAL accelerometer data with thigh activPAL event data for creating labeled datasets
+* Re-create the model development process used in Griffiths et al. 2021
+* Experiment with new model development methods TBA
+* Eestimate non-wear periods from activPAL accelerometer data - algorithm validation ongoing
 
 This repository is constantly being updated. Check back for more info...
 
@@ -82,7 +83,7 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Open your terminal / shell and navigate to the directory where you want to install this software
+1. Open your terminal/shell and navigate to the directory where you want to install this software
 2. Clone the repo
    ```sh
    git clone https://github.com/Ben-Jamin-Griff/ProsNet.git
