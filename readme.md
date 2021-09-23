@@ -83,7 +83,6 @@ This is an example of how to list things you need to use the software and how to
 ### Installation
 
 1. Open your terminal / shell and navigate to the directory where you want to install this software
-
 2. Clone the repo
    ```sh
    git clone https://github.com/Ben-Jamin-Griff/ProsNet.git
@@ -91,6 +90,10 @@ This is an example of how to list things you need to use the software and how to
 3. Install Python packages
    ```sh
    pip install -r requirements.txt
+   ```
+4. Run the example script
+   ```sh
+   python3 examples/setup_example.py
    ```
 
 <!-- USAGE EXAMPLES -->
