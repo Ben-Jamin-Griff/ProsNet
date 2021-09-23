@@ -43,7 +43,7 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#author">Author</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
@@ -77,7 +77,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+You need these pre-installed on your device to get started.
 
 * python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/)
 
@@ -111,7 +111,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -124,12 +124,13 @@ Contributions are what make the open source community such an amazing place to l
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<!-- CONTACT -->
-## Contact
+<!-- Author -->
+## Author
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+👤 **Benjamin Griffiths**
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+- Twitter: [@Ben_Jamin_Griff](https://twitter.com/ben_jamin_griff)
+- Github: [@Ben_Jamin_Griff](https://github.com/ben_jamin_griff)
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
