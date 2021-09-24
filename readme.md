@@ -120,8 +120,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 👤 **Benjamin Griffiths**
 
-- [Twitter] (https://twitter.com/ben_jamin_griff)
-- [Github] (https://github.com/ben_jamin_griff)
+- [Twitter](https://twitter.com/ben_jamin_griff)
+- [Github](https://github.com/ben_jamin_griff)
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
