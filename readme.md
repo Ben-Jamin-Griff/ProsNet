@@ -90,14 +90,16 @@ You need these pre-installed on your device to get started.
    python3 examples/setup_example.py
    ```
 
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Make sure you have cloned the repository and installed the `requirements.txt`
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+Just run the following command at the root of your project:
 
-<!-- CONTRIBUTING -->
+```sh
+python3 examples/
+```
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place. Any contributions you make are **greatly appreciated**.
