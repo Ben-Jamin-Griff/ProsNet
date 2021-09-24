@@ -1,6 +1,6 @@
-from activity_monitor.activpal import Activpal
-from stack.epoch_stack import EpochStack
-from dataset.engineering_set import EngineeringSet
+from ProsNet.activity_monitor.activpal import Activpal
+from ProsNet.stack.epoch_stack import EpochStack
+from ProsNet.dataset.engineering_set import EngineeringSet
 
 """
 Creating a deep training set

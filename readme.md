@@ -85,10 +85,6 @@ You need these pre-installed on your device to get started.
    ```sh
    pip install -r requirements.txt
    ```
-5. Run the example script
-   ```sh
-   python3 examples/setup_example.py
-   ```
 
 ## Usage
 

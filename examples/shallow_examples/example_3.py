@@ -1,7 +1,7 @@
-from activity_monitor.activpal import Activpal
-from stack.epoch_stack import EpochStack
-from dataset.feature_set import FeatureSet
-from model.shallow_model import ShallowModel
+from ProsNet.activity_monitor.activpal import Activpal
+from ProsNet.stack.epoch_stack import EpochStack
+from ProsNet.dataset.feature_set import FeatureSet
+from ProsNet.model.shallow_model import ShallowModel
 
 """
 Validate shallow predictions

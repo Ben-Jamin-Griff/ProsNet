@@ -3,6 +3,10 @@
 apc-data/
 fab-data/
 docs/
+paper_scripts/
+
+pyproject.toml
+setup.cfg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
