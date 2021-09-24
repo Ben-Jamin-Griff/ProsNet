@@ -56,8 +56,8 @@ This repository is constantly being updated. Check back for more info...
 
 ### Built With
 
-* 🐍 [Python](https://python.com)
-* [Scikit-Learn](https://scikit-learn.org)
+* 🐍 [Python](https://www.python.com)
+* [Scikit-Learn](https://www.scikit-learn.org)
 
 <!-- GETTING STARTED -->
 ## 🚀 Getting Started
