@@ -92,7 +92,7 @@ You need these pre-installed on your device to get started.
 
 ## Usage
 
-Make sure you have cloned the repository and installed the `requirements.txt`
+Make sure you have cloned the repository and installed `requirements.txt`
 
 Just run the following command at the root of your project:
 
@@ -100,7 +100,7 @@ Just run the following command at the root of your project:
 python3 examples/
 ```
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are what make the open source community such an amazing place. Any contributions you make are **greatly appreciated**.
 
