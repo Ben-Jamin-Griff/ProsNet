@@ -1,1 +1,1 @@
-print(" Your're ready to go 🚀")
+print(" Your're ready to go", "\U0001f680")
