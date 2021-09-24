@@ -56,15 +56,15 @@ This repository is constantly being updated. Check back for more info...
 
 ### Built With
 
-* [Python](https://python.com)
+* 🐍 [Python](https://python.com)
 * [Scikit-Learn](https://scikit-learn.org)
 
 <!-- GETTING STARTED -->
-## Getting Started
+## 🚀 Getting Started
 
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
+### 💻 Prerequisites
 
 You need these pre-installed on your device to get started.
 
