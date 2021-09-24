@@ -1,12 +1,4 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-<!-- <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a> -->
-
   <h1 align="center">ProsNet</h1>
-
   <p align="center">
     A software package for developing classification models that predict physical behaviour postures.
     <br />
@@ -20,7 +12,6 @@
     <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a> -->
   </p>
 </p>
-
 
 
 <!-- TABLE OF CONTENTS -->
@@ -48,9 +39,7 @@
   </ol>
 </details>
 
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
+## 🤔 About The Project
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
