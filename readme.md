@@ -43,7 +43,7 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-This respository contains the software and models developed for *"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (preprint)*.
+This respository contains the software and models developed in *"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (preprint)*.
 
 Here are the main uses of this software:
 * Process shank activPAL accelerometer data to estimate daily physical behaviour postures
