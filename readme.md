@@ -19,7 +19,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#🤔-about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>
@@ -68,7 +68,7 @@ To get a local copy up and running follow these simple example steps.
 
 You need these pre-installed on your device to get started.
 
-* python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/)
+* Python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/)
 
 ### Installation
 
@@ -117,7 +117,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 👤 **Benjamin Griffiths**
 
 - [Twitter](https://twitter.com/ben_jamin_griff)
-- [Github](https://github.com/ben_jamin_griff)
+- [Github](https://github.com/Ben-Jamin-Griff)
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements

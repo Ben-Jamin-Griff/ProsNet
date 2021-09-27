@@ -1,7 +1,7 @@
-from ProsNet.activity_monitor.activpal import Activpal
-from ProsNet.stack.epoch_stack import EpochStack
-from ProsNet.dataset.feature_set import FeatureSet
-from ProsNet.model.deep_model import DeepModel
+from ProsNet import Activpal
+from ProsNet import EpochStack
+from ProsNet import FeatureSet
+from ProsNet import DeepModel
 
 """
 Creating a shallow training set
