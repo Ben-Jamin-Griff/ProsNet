@@ -1,9 +1,7 @@
-from dataset.dataset_abc import ABCDataset
-from helper import Helper
+from ProsNet.dataset.dataset_abc import ABCDataset
+from ProsNet.helper import Helper
 
-import pandas as pd
 import numpy as np
-import math
 
 class Dataset(ABCDataset, Helper):
     def __init__(self, processing_type='epoch'):

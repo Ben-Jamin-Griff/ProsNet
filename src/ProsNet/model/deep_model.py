@@ -1,12 +1,7 @@
-from model.model import Model
+from ProsNet.model.model import Model
 
-import pandas as pd
-import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import train_test_split
-import sklearn.metrics as metrics
 
 class DeepModel(Model):
     def __init__(self):

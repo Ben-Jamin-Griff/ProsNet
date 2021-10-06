@@ -1,5 +1,5 @@
-from stack.posture_stack_abc import ABCPostureStack
-from helper import Helper
+from ProsNet.stack.posture_stack_abc import ABCPostureStack
+from ProsNet.helper import Helper
 
 import pandas as pd
 import numpy as np
@@ -29,17 +29,16 @@ class NonWearStack(ABCPostureStack, Helper):
     def get_data(self, activity_monitor):
         self.raw_acceleration_data = activity_monitor.raw_data
 
-    def show_stack(self):
-        ## Not edited
+    def show_stack(self, index_for_processing = 'deault'):
         print('Posture Stack')
         print('----------')
         try:
-            self.posture_stack.iloc[:,[0,4,5,6,]].plot(x='Time')
+            self.posture_stack.iloc[:,[0,4,5,6,]].plot(x='Time') # 0=Time, 4=VM, 5=NonWear, 6=Validation
         except:
             self.posture_stack.iloc[:,[0,4,5,]].plot(x='Time')
 
-        plt.savefig('plot' + str(random.randrange(99)) + '.png')
-        #plt.close()
+        plt.savefig('plot' + str(index_for_processing) + '.png')
+        plt.close()
         print('----------')
 
     def create_validation_stack(self, filename = None):
@@ -310,3 +309,19 @@ class NonWearStack(ABCPostureStack, Helper):
         self.start_time = meta.start_datetime
         self.end_time = meta.stop_datetime
         self.total_time = total_time
+
+    def remove_epochs(self, filename = None):
+        if filename is not None:
+            file_path = filename
+            non_wear_data = pd.read_csv(file_path)
+            non_wear_data.start = pd.to_datetime(non_wear_data.start, format="%d/%m/%Y %H:%M")
+            non_wear_data.end = pd.to_datetime(non_wear_data.end, format="%d/%m/%Y %H:%M")
+            for nw_index, nw_row in non_wear_data.iterrows():
+                self.posture_stack = self.posture_stack.drop(self.posture_stack[(self.posture_stack.Time > non_wear_data.start[0]) & (self.posture_stack.Time < non_wear_data.end[0])].index)
+            self.posture_stack = self.posture_stack.reset_index(drop=True)
+            ## This may need updating as it could brake easily (taken from epoch_stack not a property in non_wear_stack)
+            #self.posture_stack_duration = len(self.posture_stack.index) * 15 # this 15 shouldn't be fixed
+
+    def save_stack(self, filename):
+        print('...saving stack')
+        self.posture_stack.to_pickle(filename + '_stack.pkl')

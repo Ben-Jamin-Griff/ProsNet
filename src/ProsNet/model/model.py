@@ -1,13 +1,11 @@
-from model.model_abc import ABCModel
-from plotter import Plotter
+from ProsNet.model.model_abc import ABCModel
+from ProsNet.plotter import Plotter
 
 import tkinter as tk
 from tkinter import filedialog
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import sklearn.metrics as metrics
 import tensorflow as tf

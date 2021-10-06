@@ -1,5 +1,5 @@
-from dataset.dataset import Dataset
-from plotter import Plotter
+from ProsNet.dataset.dataset import Dataset
+from ProsNet.plotter import Plotter
 
 import pandas as pd
 import numpy as np

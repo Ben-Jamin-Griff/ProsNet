@@ -10,11 +10,3 @@ class ABCModel(ABC):
     @abstractmethod
     def get_data(self):
         """Required method"""
-
-    #@abstractmethod
-    #def predict_postures(self):
-        """Required method"""
-
-    #@abstractmethod
-    #def save_results(self):
-        """Required method"""

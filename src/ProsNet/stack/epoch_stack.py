@@ -1,5 +1,5 @@
-from stack.posture_stack_abc import ABCPostureStack
-from helper import Helper
+from ProsNet.stack.posture_stack_abc import ABCPostureStack
+from ProsNet.helper import Helper
 
 import pandas as pd
 import numpy as np

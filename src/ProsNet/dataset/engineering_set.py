@@ -1,4 +1,4 @@
-from dataset.dataset import Dataset
+from ProsNet.dataset.dataset import Dataset
 
 import pandas as pd
 import numpy as np
