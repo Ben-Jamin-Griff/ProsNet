@@ -11,16 +11,16 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-This respository contains the software and models described in the publication
+This respository contains the code and models described in the publication:
 
-*"A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (preprint)*.
+*A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (currently under review)*.
 
-Currently this code works with data from the activPAL activtiy monitor:
+Currently this code works with data export from the activPAL activtiy monitor:
 
-https://www.palt.com/(https://www.palt.com/)
+[palt.com](https://www.palt.com/)
 
 Here are the main uses of this software:
-* Process shank activPAL accelerometer data to estimate daily physical behaviour postures
+* Process shank activPAL accelerometer data to estimate physical behaviour postures
 * Process shank activPAL accelerometer data with thigh activPAL event data for creating labeled datasets
 * Re-create the model development process used in Griffiths et al. (2021)
 * Experiment with new model development methods TBA
