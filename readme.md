@@ -15,9 +15,7 @@ This respository contains the code and models described in the publication:
 
 *A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (currently under review)*.
 
-Currently this code works with data export from the activPAL activtiy monitor:
-
-[palt.com](https://www.palt.com/)
+Currently this code works with data export from the activPAL activtiy monitor: [palt.com](https://www.palt.com/)
 
 Here are the main uses of this software:
 * Process shank activPAL accelerometer data to estimate physical behaviour postures
@@ -26,7 +24,7 @@ Here are the main uses of this software:
 * Experiment with new model development methods TBA
 * Estimate non-wear periods from activPAL accelerometer data - algorithm validation ongoing
 
-This repository is constantly being updated. Check back for more info...
+See the [example scripts](https://github.com/Ben-Jamin-Griff/ProsNet/tree/main/examples) for each of these use cases.
 
 ### Built With
 
