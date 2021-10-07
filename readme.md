@@ -1,16 +1,10 @@
-  <h1 align="center">ProsNet</h1>
-  <p align="center">
-    A software package for developing classification models that predict physical behaviour postures.
-    <br />
-    <a href="https://github.com/Ben-Jamin-Griff/ProsNet"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-<!--    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a> -->
-  </p>
+<h1 align="center">ProsNet</h1>
+<p align="center">
+  A software package for developing classification models that predict physical behaviour postures.
+  <br />
+  <a href="https://github.com/Ben-Jamin-Griff/ProsNet"><strong>Explore the docs »</strong></a>
+  <br />
+  <br />
 </p>
 
 ## 🤔 About The Project
