@@ -78,7 +78,7 @@ py examples\shallow_examples\example_1.py
 
 ## 🗺️ Exploring The Package
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple steps.
 
 ### Installation
 
