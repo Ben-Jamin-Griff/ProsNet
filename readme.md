@@ -11,18 +11,21 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
-This respository contains the code and models described in the publication:
+This respository contains the sotware package and models described in the publication:
 
 *A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (currently under review)*.
 
 The code works with data export from the activPAL activtiy monitor [palt.com](https://www.palt.com/)
 
-Here are the main uses of this software:
-* Process shank activPAL accelerometer data to estimate physical behaviour postures
-* Process shank activPAL accelerometer data with thigh activPAL event data for creating labeled datasets
+Here are the main uses for this software:
+
+* Estimate physical behaviour postures from shank accelerometer data
+* Process shank accelerometer data along with thigh accelerometer event data to create a labeled dataset for training:
+  * Machine learning classifiers from heuristic features
+  * Deep learning classifiers from windowed acceleration data
 * Re-create the model development process used in Griffiths et al. (2021)
-* Experiment with new model development methods TBA
-* Estimate non-wear periods from activPAL accelerometer data - algorithm validation ongoing
+* Experiment with new model development
+* Estimate non-wear periods from accelerometer data
 
 See the [example scripts](https://github.com/Ben-Jamin-Griff/ProsNet/tree/main/examples) for each of these use cases.
 
@@ -30,11 +33,12 @@ See the [example scripts](https://github.com/Ben-Jamin-Griff/ProsNet/tree/main/e
 
 * 🐍 [Python](https://www.python.org)
 * [Scikit-Learn](https://www.scikit-learn.org)
+* [TensorFlow](https://www.tensorflow.org/)
 
-<!-- GETTING STARTED -->
+
 ## 🚀 Getting Started
 
-To get a local copy up and running follow these simple example steps.
+Test out the package and start processing data.
 
 ### 💻 Prerequisites
 
@@ -55,18 +59,42 @@ You need these pre-installed on your device to get started.
    ```  
 4. Install Python packages
    ```sh
-   pip install -r requirements.txt
+   pip install ProsNet
    ```
 
-## Usage
+### Usage
 
-Make sure you have cloned the repository and installed `requirements.txt`
+Make sure you completed the installation steps and then run the following command:
 
-Just run the following command at the root of your project:
-
+* Unix/maxOS 
 ```sh
-python3 examples/
+python3 examples\shallow_examples\example_1.py
 ```
+
+* Windows
+```sh
+py examples\shallow_examples\example_1.py
+```
+
+## 🗺️ Exploring The Package
+
+To get a local copy up and running follow these simple example steps.
+
+### Installation
+
+1. Open your terminal/shell and navigate to the directory where you want to install this software
+2. Clone the repo
+   ```sh
+   git clone https://github.com/Ben-Jamin-Griff/ProsNet.git
+   ```
+3. Move into repo
+   ```sh
+   cd ProsNet
+   ```  
+4. Install Python packages
+   ```sh
+   pip install -r requirements.txt
+   ```
 
 ## 🤝 Contributing
 
