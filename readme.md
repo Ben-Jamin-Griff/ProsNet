@@ -119,10 +119,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - [Twitter](https://twitter.com/ben_jamin_griff)
 - [Github](https://github.com/Ben-Jamin-Griff)
 
-<!-- ACKNOWLEDGEMENTS -->
+<!-- ACKNOWLEDGEMENTS
 ## Acknowledgements
 
-TBC
+#TBC -->
 <!--
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
 * [Img Shields](https://shields.io)
