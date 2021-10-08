@@ -68,7 +68,7 @@ Make sure you completed the installation steps and then run the following comman
 
 * Unix/maxOS 
 ```sh
-python3 examples\shallow_examples\example_1.py
+python3 examples/shallow_examples/example_1.py
 ```
 
 * Windows
