@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'ProsNet',
-    version = '0.0.2',
+    version = '0.0.3',
     author = 'Benjamin Griffiths',
     description = 'A package for processing activPAL activity monitor data.',
     py_modules=["ProsNet"],
