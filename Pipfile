@@ -12,6 +12,7 @@ scipy = "*"
 uos-activpal = "*"
 numba = "*"
 seaborn = "*"
+resampy = "*"
 
 [dev-packages]
 
