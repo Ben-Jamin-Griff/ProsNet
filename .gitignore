@@ -2,8 +2,9 @@
 .vscode/
 apc-data/
 fab-data/
+victoria-validation-data/
 docs/
-paper_scripts/
+paper-scripts/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
