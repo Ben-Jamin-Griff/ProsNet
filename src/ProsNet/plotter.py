@@ -21,6 +21,9 @@ class Plotter():
         elif type == 'predictions':
             my_data = self.predictions
             title = 'Predictions'
+        elif type == 'validation':
+            my_data = self.validation_stack['Event_Code']
+            title = 'Validation'
 
         x = self.posture_stack_start_time
         seconds = ((x.hour * 60 + x.minute) * 60) + x.second

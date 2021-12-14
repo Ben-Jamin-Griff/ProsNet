@@ -4,11 +4,12 @@ from ProsNet.plotter import Plotter
 import tkinter as tk
 from tkinter import filedialog
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report
 import sklearn.metrics as metrics
-import tensorflow as tf
+#import tensorflow as tf
 import pickle
 
 ### MODEL needs updating for when altering datatset, needs to include participants id
@@ -22,6 +23,7 @@ class Model(ABCModel, Plotter):
         self.predictions = None
         self.postures = None
         self.posture_stack_start_time = None
+        self.timeset = None
         self.one_hot_postures = None
 
     def show_set(self):
@@ -44,21 +46,30 @@ class Model(ABCModel, Plotter):
             print(f"Class {classy} has {count} predictions")
         print('----------')
 
-    def load_model(self):
-        root = tk.Tk()
-        root.withdraw()
-        file_path = filedialog.askopenfilename(title = "Load model")
-        self.model = tf.keras.models.load_model(file_path)
+    def load_model(self, filename = None):
+        if filename is not None:
+            file_path = filename
+        else:
+            root = tk.Tk()
+            root.withdraw()
+            file_path = filedialog.askopenfilename(title = "Load model")
+        self.model = pickle.load(open(file_path, 'rb'))
         print(f"Loaded model: {file_path}")
-        self.model.summary()
+        #self.model.summary()
         print('----------')
 
     def get_data(self, set):
         self.dataset = set.dataset[0]
+        self.timeset = set.dataset[3]
+        self.posture_stack_start_time = set.posture_stack_start_time
 
     def get_postures(self, set):
         self.postures = set.dataset[1]
         self.posture_stack_start_time = set.posture_stack_start_time
+
+    def export_predictions(self, filename):
+        export_df = pd.DataFrame(list(zip(self.timeset, self.predictions)), columns = ['Timestamp', 'ActivityCode (0=sedentary 1=standing 2=stepping 3=lying)'])
+        export_df.to_csv(filename + '_.csv', index=False)
             
     def reassign_classes(self):
         for count, value in enumerate(self.postures):
@@ -70,20 +81,6 @@ class Model(ABCModel, Plotter):
                 self.postures[count] = 3
             else:
                 continue
-
-    def balance_classes(self):
-        pass
-        #sedData = data.loc[data.EventCode == 0]
-        #shapeSed = sedData.shape[0]
-        #standData = data.loc[data.EventCode == 1]
-        #shapeStand = standData.shape[0]
-        #stepData = data.loc[data.EventCode == 2]
-        #shapeSteps = stepData.shape[0]
-        #smallestClass = min([shapeSed, shapeStand, shapeSteps])
-        #newSedData = sedData.sample(smallestClass)
-        #newStandData = standData.sample(smallestClass)
-        #newStepData = stepData.sample(smallestClass)
-        #newDataFrame = pd.concat([newSedData, newStandData, newStepData], axis=0)
 
     def remove_classes(self, class_to_remove):
         keep_idx = self.postures != class_to_remove

@@ -1,123 +1,129 @@
 from ProsNet.model.model import Model
-
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.neighbors import (KNeighborsClassifier)
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import Normalizer
-from sklearn.metrics import plot_confusion_matrix
+from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
 
 class ShallowModel(Model):
     def __init__(self):
         super().__init__()
 
-    def create_model(self, type_of_model, plot_results = False, save_model_results = None):
-        if type_of_model == 'knn':
-            
-            X_train, X_test, y_train, y_test = train_test_split(self.dataset, self.postures, test_size=0.2, random_state=42)
-            LABELS = ['Sedentary', 'Standing', 'Stepping', 'Lying']
-            
-            unique_classes_train, unique_classes_test = self.review_class_imbalance(y_train, y_test, LABELS)
-            n_neighbors = 10
+    def make_predictions(self):
+        feature_names = [
+                  'x mean',
+                  'y mean',
+                  'z mean',
+                  'vm mean',
+                  'x std',
+                  'y std',
+                  'z std',
+                  'vm std',
+                  'x med abs dev',
+                  'y med abs dev',
+                  'z med abs dev',
+                  'vm med abs dev',
+                  'x max',
+                  'y max',
+                  'z max',
+                  'vm max',
+                  'x min',
+                  'y min',
+                  'z min',
+                  'vm min',
+                  'x sig mag area',
+                  'y sig mag area',
+                  'z sig mag area',
+                  'vm sig mag area',
+                  'x energy',
+                  'y energy',
+                  'z energy',
+                  'vm energy',
+                  'x int qu range',
+                  'y int qu range',
+                  'z int qu range',
+                  'vm int qu range',
+                  'x autocorrelation',
+                  'y autocorrelation',
+                  'z autocorrelation',
+                  'vm autocorrelation',
+                  'x spec peak pos 1',
+                  'x spec peak pos 2',
+                  'x spec peak pos 3',
+                  'x spec peak pos 4',
+                  'x spec peak pos 5',
+                  'x spec peak pos 6',
+                  'x spec peak freq 1',
+                  'x spec peak freq 2',
+                  'x spec peak freq 3',
+                  'x spec peak freq 4',
+                  'x spec peak freq 5',
+                  'x spec peak freq 6',
+                  'y spec peak pos 1',
+                  'y spec peak pos 2',
+                  'y spec peak pos 3',
+                  'y spec peak pos 4',
+                  'y spec peak pos 5',
+                  'y spec peak pos 6',
+                  'y spec peak freq 1',
+                  'y spec peak freq 2',
+                  'y spec peak freq 3',
+                  'y spec peak freq 4',
+                  'y spec peak freq 5',
+                  'y spec peak freq 6',
+                  'z spec peak pos 1',
+                  'z spec peak pos 2',
+                  'z spec peak pos 3',
+                  'z spec peak pos 4',
+                  'z spec peak pos 5',
+                  'z spec peak pos 6',
+                  'z spec peak freq 1',
+                  'z spec peak freq 2',
+                  'z spec peak freq 3',
+                  'z spec peak freq 4',
+                  'z spec peak freq 5',
+                  'z spec peak freq 6',
+                  'vm spec peak pos 1',
+                  'vm spec peak pos 2',
+                  'vm spec peak pos 3',
+                  'vm spec peak pos 4',
+                  'vm spec peak pos 5',
+                  'vm spec peak pos 6',
+                  'vm spec peak freq 1',
+                  'vm spec peak freq 2',
+                  'vm spec peak freq 3',
+                  'vm spec peak freq 4',
+                  'vm spec peak freq 5',
+                  'vm spec peak freq 6',
+                  'x spec power band 1',
+                  'x spec power band 2',
+                  'x spec power band 3',
+                  'x spec power band 4',
+                  'y spec power band 1',
+                  'y spec power band 2',
+                  'y spec power band 3',
+                  'y spec power band 4',
+                  'z spec power band 1',
+                  'z spec power band 2',
+                  'z spec power band 3',
+                  'z spec power band 4',
+                  'vm spec power band 1',
+                  'vm spec power band 2',
+                  'vm spec power band 3',
+                  'vm spec power band 4'
+                  ]
 
-            pipeline = make_pipeline(Normalizer(), LinearDiscriminantAnalysis(n_components=2))
-            knn = KNeighborsClassifier(n_neighbors=n_neighbors)
-            pipeline.fit(X_train, y_train)
-            knn.fit(pipeline.transform(X_train), y_train)
+        standardize = MinMaxScaler()
+        feature_set_scaled = standardize.fit_transform(self.dataset)
+        model_set = pd.DataFrame(data=feature_set_scaled, columns=feature_names)
 
-            acc_knn = knn.score(pipeline.transform(X_test), y_test)
+        prediction_features = ('x mean', 'y mean', 'z mean', 'vm mean', 'x std', 'y std', 'y max',
+        'z max', 'vm max', 'x min', 'x spec peak freq 1', 'x spec peak freq 2',
+        'x spec peak freq 3', 'x spec peak freq 4', 'x spec peak freq 5',
+        'x spec peak freq 6', 'y spec peak freq 1', 'y spec peak freq 2',
+        'y spec peak freq 3', 'y spec peak freq 4', 'y spec peak freq 5',
+        'y spec peak freq 6', 'z spec peak freq 1', 'z spec peak freq 2',
+        'z spec peak freq 3', 'z spec peak freq 4', 'z spec peak freq 5',
+        'z spec peak freq 6', 'vm spec peak freq 1', 'vm spec peak freq 2',
+        'vm spec peak freq 3', 'vm spec peak freq 4', 'vm spec peak freq 5',
+        'vm spec peak freq 6')
 
-            X_embedded = pipeline.transform(self.dataset)
-            fig, ax = plt.subplots()
-            scatter = ax.scatter(X_embedded[:, 0], X_embedded[:, 1], c=self.postures, s=30, cmap='Set1')
-            ax.set_title("{}, {}, KNN (k={})\nTest accuracy = {:.2f}".format('Example Set',
-                                                                            'Normalized',
-                                                                            n_neighbors,
-                                                                            acc_knn));
-            # produce a legend with the unique colors from the scatter
-            legend1 = ax.legend(*scatter.legend_elements(),
-                                loc="upper left", title="Classes")
-                    
-            ax.add_artist(legend1)
-
-            if plot_results:
-                plt.grid(False)
-                plt.ion()
-                plt.show()
-                plt.draw()
-                plt.pause(0.001)
-                input("Press [enter] to continue.")
-
-            if save_model_results is not None:
-                plt.savefig(save_model_results + '_plot.png', bbox_inches='tight')
-
-            disp = plot_confusion_matrix(knn, pipeline.transform(X_test), y_test,
-                                        #display_labels=LABELS,
-                                        cmap=plt.cm.Blues,
-                                        normalize='true');
-
-            predicted = knn.predict(pipeline.transform(X_test))
-
-            f = open(save_model_results + '_results.txt',"w+")
-            f.write("Classification Results\n")
-            f.write(classification_report(y_test, predicted) + "\n")
-            f.write('-----------------------')
-            f.close
-
-            if plot_results:
-                plt.grid(False)
-                plt.ion()
-                plt.show()
-                plt.draw()
-                plt.pause(0.001)
-                input("Press [enter] to continue.")
-
-            if save_model_results is not None:
-                plt.savefig(save_model_results + '_conf_matrix.png', bbox_inches='tight')
-
-        self.model = knn
-        self.pipeline = pipeline        
-
-    def compare_best_feature_combo(self):
-        import matplotlib.pyplot as plt
-        from sklearn.svm import SVC
-        from sklearn.feature_selection import RFECV
-        from sklearn.feature_selection import RFE
-
-        breakpoint()
-
-        pipeline = make_pipeline(Normalizer(), LinearDiscriminantAnalysis(n_components=2), KNeighborsClassifier(n_neighbors=10))
-
-        transformer = Normalizer().fit(self.dataset)
-        X = transformer.transform(self.dataset)
-        #X = self.dataset
-        y = self.postures
-
-        svc = SVC(kernel="linear")
-
-        min_features_to_select = 1  # Minimum number of features to consider
-        rfecv = RFECV(svc, step=1, cv=None, scoring='f1_weighted', min_features_to_select=min_features_to_select)
-
-        rfecv.fit(X, y)
-
-        print(rfecv.support_)
-        print(rfecv.ranking_)
-        print("Optimal number of features : %d" % rfecv.n_features_)
-        print([i for i, x in enumerate(rfecv.support_) if x])
-
-        rfe = RFE(svc, 3)
-        rfe = rfe.fit(X, y)
-        print(rfe.support_)
-        print([i for i, x in enumerate(rfe.support_) if x])
-
-        # Plot number of features VS. cross-validation scores
-        plt.figure()
-        plt.xlabel("Number of features selected")
-        plt.ylabel("Cross validation score (nb of correct classifications)")
-        plt.plot(range(min_features_to_select,
-                    len(rfecv.grid_scores_) + min_features_to_select),
-                rfecv.grid_scores_)
-        plt.show()
-        
+        model_set = model_set[model_set.columns.intersection(prediction_features)]
+        self.predictions = self.model.predict(model_set)

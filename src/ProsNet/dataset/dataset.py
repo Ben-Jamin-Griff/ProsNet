@@ -56,6 +56,10 @@ class Dataset(ABCDataset, Helper):
         np.save(filename + '_' + type_of_set + '_set.npy', self.dataset[0])
         np.save(filename + '_' + type_of_set + '_set_classes.npy', self.dataset[1])
         np.save(filename + '_' + type_of_set + '_set_ids.npy', self.dataset[2])
+        try:
+            np.save(filename + '_' + type_of_set + '_set_time.npy', self.dataset[3])
+        except:
+            pass
 
     def load_set(self, filename, type_of_set):
         print('...loading set')

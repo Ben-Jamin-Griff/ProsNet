@@ -57,10 +57,39 @@ class FeatureSet(Dataset, Plotter):
                 participant_id = np.full(shape=len(posture_class), fill_value=r.randint(0,9999), dtype=np.int)
                 self.dataset = [feature_set, posture_class, participant_id]
                 self.remove_classes()
-            else:
-                pass
+            else: # processing data without a posture stack, only raw data without events
+                EPOCH_SIZE = 15
+                feature_set = np.empty((0,100), int) # 4 or 100
+                meta, signals = load_activpal_data(self.raw_acceleration_data)
+                total_time = meta.stop_datetime - meta.start_datetime
+                self.posture_stack_start_time = meta.start_datetime
+                total_samples = int(total_time.total_seconds() * 20)
+                total_windows = math.floor(total_time.total_seconds() / EPOCH_SIZE)
+                arr = np.array([meta.start_datetime + datetime.timedelta(seconds=i*0.05) for i in range(total_samples)])
+                x = signals[:total_samples,0]
+                y = signals[:total_samples,1]
+                z = signals[:total_samples,2]
+                chunk = pd.DataFrame({'Time':arr, 'X':x, 'Y':y, 'Z':z})
+                #Loop through the raw data in epoch sizes and add to a chunk
+                time_set = []
+                for window in range(0, total_windows):
+                    current_epoch_x = x[window*(20*EPOCH_SIZE):(window+1)*(20*EPOCH_SIZE)]
+                    current_epoch_y = y[window*(20*EPOCH_SIZE):(window+1)*(20*EPOCH_SIZE)]
+                    current_epoch_z = z[window*(20*EPOCH_SIZE):(window+1)*(20*EPOCH_SIZE)]
+                    time_set.append(arr[window*(20*EPOCH_SIZE)])
+                    current_epoch = pd.DataFrame(list(zip(current_epoch_x, current_epoch_y, current_epoch_z)),columns =['X', 'Y', 'Z'])
+
+                    feature_array = self.create_feature_array(current_epoch)
+                    # Add this row to the feature set
+                    feature_set=np.append(feature_set, [feature_array], axis=0)
+
+                    self.print_progress_bar(window+1, total_windows, 'Feature set progress:')
+
+                posture_class = []
+                participant_id = []
+                self.dataset = [feature_set, posture_class, participant_id, time_set]
         else:
-            pass
+            pass # this should be populated for analysing data using an event based approach instead of an epoch based approach.
 
     def create_feature_array(self, current_epoch):
         xData = current_epoch['X'].to_numpy() #self.plot_signal(xData, 'xData')
