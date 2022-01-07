@@ -1,11 +1,5 @@
-# Data, docs & .vscode
+# .vscode
 .vscode/
-apc-data/
-fab-data/
-victoria-validation-data/
-valid-study-data/
-docs/
-paper-scripts/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
