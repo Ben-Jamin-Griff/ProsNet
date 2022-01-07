@@ -31,6 +31,7 @@ setuptools.setup(
         "uos-activpal",
         "numba",
         "seaborn",
+        "sklearn",
         "numpy == 1.20"
     ],
 )
