@@ -110,20 +110,20 @@ class ShallowModel(Model):
                   'vm spec power band 4'
                   ]
 
-        standardize = MinMaxScaler()
-        feature_set_scaled = standardize.fit_transform(self.dataset)
+        feature_set_scaled = self.scaler.transform(self.dataset)
+
         model_set = pd.DataFrame(data=feature_set_scaled, columns=feature_names)
 
-        prediction_features = ('x mean', 'y mean', 'z mean', 'vm mean', 'x std', 'y std', 'y max',
-        'z max', 'vm max', 'x min', 'x spec peak freq 1', 'x spec peak freq 2',
-        'x spec peak freq 3', 'x spec peak freq 4', 'x spec peak freq 5',
-        'x spec peak freq 6', 'y spec peak freq 1', 'y spec peak freq 2',
-        'y spec peak freq 3', 'y spec peak freq 4', 'y spec peak freq 5',
-        'y spec peak freq 6', 'z spec peak freq 1', 'z spec peak freq 2',
-        'z spec peak freq 3', 'z spec peak freq 4', 'z spec peak freq 5',
-        'z spec peak freq 6', 'vm spec peak freq 1', 'vm spec peak freq 2',
-        'vm spec peak freq 3', 'vm spec peak freq 4', 'vm spec peak freq 5',
-        'vm spec peak freq 6')
+        prediction_features = ('x mean', 'y mean', 'z mean', 'vm mean', 'x std', 'x max', 'y max',
+       'z max', 'vm max', 'x min', 'y min', 'x spec peak freq 1',
+       'x spec peak freq 2', 'x spec peak freq 3', 'x spec peak freq 4',
+       'x spec peak freq 5', 'x spec peak freq 6', 'y spec peak freq 1',
+       'y spec peak freq 2', 'y spec peak freq 3', 'y spec peak freq 4',
+       'y spec peak freq 5', 'y spec peak freq 6', 'z spec peak freq 1',
+       'z spec peak freq 2', 'z spec peak freq 3', 'z spec peak freq 4',
+       'z spec peak freq 5', 'z spec peak freq 6', 'vm spec peak freq 1',
+       'vm spec peak freq 2', 'vm spec peak freq 3', 'vm spec peak freq 4',
+       'vm spec peak freq 5', 'vm spec peak freq 6')
 
         model_set = model_set[model_set.columns.intersection(prediction_features)]
         self.predictions = self.model.predict(model_set)

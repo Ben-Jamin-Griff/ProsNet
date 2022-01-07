@@ -1,9 +1,9 @@
 Quantity of data in in epoch 15
-265.95416666666665 hours
+1159.0708333333334 hours
 Event code analysis for epoch 15
 Posture count for each class before balancing
-Counter({3.0: 18783, 0.0: 15095, 1.0: 11161, 2.0: 4522})
+Counter({3.0: 92268, 0.0: 82255, 1.0: 44018, 2.0: 20327})
 Posture count for each class after balancing
-Counter({0.0: 4522, 1.0: 4522, 2.0: 4522, 3.0: 4522})
+Counter({0.0: 20327, 1.0: 20327, 2.0: 20327, 3.0: 20327})
 Number of participants
-10
+15

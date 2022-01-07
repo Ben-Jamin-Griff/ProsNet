@@ -47,7 +47,7 @@ class Plotter():
                     plt.polar(value, r, 'g.', ms=MAKERSIZE)
                 elif clr == 2:
                     plt.polar(value, r, 'r.', ms=MAKERSIZE)
-                elif clr == 3:
+                elif clr == 3 or clr == 3.1 or clr == 3.2:
                     plt.polar(value, r, 'b.', ms=MAKERSIZE)
             except:
                 pass

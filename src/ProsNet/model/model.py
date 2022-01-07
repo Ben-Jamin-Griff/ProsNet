@@ -11,13 +11,13 @@ from sklearn.metrics import classification_report
 import sklearn.metrics as metrics
 #import tensorflow as tf
 import pickle
-
-### MODEL needs updating for when altering datatset, needs to include participants id
+import datetime
 
 class Model(ABCModel, Plotter):
     def __init__(self):
         super().__init__()
         self.model = None
+        self.scaler = None
         self.pipeline = None
         self.dataset = None
         self.predictions = None
@@ -58,6 +58,17 @@ class Model(ABCModel, Plotter):
         #self.model.summary()
         print('----------')
 
+    def load_scaler(self, filename = None):
+        if filename is not None:
+            file_path = filename
+        else:
+            root = tk.Tk()
+            root.withdraw()
+            file_path = filedialog.askopenfilename(title = "Load scaler")
+        self.scaler = pickle.load(open(file_path, 'rb'))
+        print(f"Loaded scaler: {file_path}")
+        print('----------')
+
     def get_data(self, set):
         self.dataset = set.dataset[0]
         self.timeset = set.dataset[3]
@@ -68,8 +79,12 @@ class Model(ABCModel, Plotter):
         self.posture_stack_start_time = set.posture_stack_start_time
 
     def export_predictions(self, filename):
-        export_df = pd.DataFrame(list(zip(self.timeset, self.predictions)), columns = ['Timestamp', 'ActivityCode (0=sedentary 1=standing 2=stepping 3=lying)'])
-        export_df.to_csv(filename + '_.csv', index=False)
+        export_df = pd.DataFrame(list(zip(self.timeset, self.predictions)), columns = ['Time', 'ActivityCode (0=sedentary 1=standing 2=stepping 3=lying)'])
+        export_df.index = export_df['Time']
+        del export_df['Time']
+        export_df = export_df.resample('1S').ffill()
+        export_df.to_csv(filename + '_.csv', index=True)
+        self.predictions = export_df
             
     def reassign_classes(self):
         for count, value in enumerate(self.postures):
@@ -86,10 +101,6 @@ class Model(ABCModel, Plotter):
         keep_idx = self.postures != class_to_remove
         self.postures = self.postures[keep_idx]
         self.dataset = self.dataset[keep_idx]
-
-    def one_hot_postures(self):
-        unique_classes = np.unique(self.postures)
-        self.one_hot_postures = tf.one_hot(self.postures, len(unique_classes))
 
     def review_class_imbalance(self, y_train, y_test, labels=None):
         # Find the unique label values...
@@ -139,14 +150,14 @@ class Model(ABCModel, Plotter):
         print('------------')
         print(classification_report(self.postures.astype(int), self.predictions.astype(int)))
 
-    def make_prediction(self):
-        if self.pipeline == None:
-            predictions_probabilities = self.model.predict(self.dataset)
-            predictions = np.argmax(predictions_probabilities, axis=1)
-            self.predictions = predictions.astype(float)
-        else:
-            predictions = self.model.predict(self.pipeline.transform(self.dataset))
-            self.predictions = predictions.astype(float)
+#    def make_prediction(self):
+#        if self.pipeline == None:
+#            predictions_probabilities = self.model.predict(self.dataset)
+#            predictions = np.argmax(predictions_probabilities, axis=1)
+#            self.predictions = predictions.astype(float)
+#        else:
+#            predictions = self.model.predict(self.pipeline.transform(self.dataset))
+#            self.predictions = predictions.astype(float)
 
     def save_predictions(self, filename):
         # Make a df... That might be a better way of creating a table to save to CSV

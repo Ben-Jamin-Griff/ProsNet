@@ -1,25 +1,25 @@
 Number of features
 100
 Number of correlated features:
-59
+58
 Correlated feature list:
-{'y min', 'x energy', 'y spec peak pos 2', 'vm spec peak pos 1', 'vm spec peak pos 5', 'z energy', 'z std', 'y spec peak pos 3', 'x med abs dev', 'z med abs dev', 'y spec power band 2', 'x spec peak pos 3', 'z spec peak pos 6', 'vm min', 'x spec power band 1', 'y spec power band 3', 'y spec peak pos 1', 'y spec peak pos 4', 'z spec power band 2', 'vm spec power band 3', 'z spec peak pos 5', 'vm spec power band 2', 'x sig mag area', 'z spec peak pos 1', 'x max', 'y spec peak pos 5', 'x int qu range', 'vm autocorrelation', 'z spec peak pos 3', 'y autocorrelation', 'x spec peak pos 4', 'vm spec peak pos 3', 'vm med abs dev', 'z spec power band 1', 'vm energy', 'vm spec power band 4', 'vm sig mag area', 'y med abs dev', 'vm int qu range', 'y int qu range', 'y sig mag area', 'z int qu range', 'z sig mag area', 'x spec peak pos 6', 'x spec peak pos 5', 'z spec peak pos 4', 'x spec power band 2', 'y energy', 'z spec peak pos 2', 'vm spec peak pos 6', 'z min', 'z autocorrelation', 'x autocorrelation', 'y spec power band 1', 'vm std', 'vm spec peak pos 4', 'x spec peak pos 2', 'vm spec peak pos 2', 'x spec peak pos 1'}
+{'y sig mag area', 'vm std', 'y spec peak pos 3', 'vm spec peak pos 4', 'x spec peak pos 5', 'y med abs dev', 'x med abs dev', 'x spec peak pos 4', 'vm autocorrelation', 'y spec peak pos 2', 'x energy', 'z spec peak pos 1', 'z spec peak pos 2', 'z spec peak pos 4', 'vm spec power band 3', 'vm spec peak pos 1', 'z spec power band 1', 'vm spec power band 2', 'x sig mag area', 'y spec power band 1', 'z spec power band 2', 'z spec peak pos 3', 'vm spec peak pos 3', 'vm spec peak pos 6', 'vm spec power band 4', 'z int qu range', 'z spec peak pos 5', 'vm spec peak pos 5', 'vm energy', 'y energy', 'x spec peak pos 3', 'x spec power band 2', 'y spec power band 2', 'vm med abs dev', 'y std', 'y spec power band 3', 'x spec peak pos 6', 'y spec peak pos 5', 'z energy', 'vm sig mag area', 'z autocorrelation', 'vm min', 'y int qu range', 'vm spec peak pos 2', 'x spec peak pos 1', 'y spec peak pos 4', 'y autocorrelation', 'z med abs dev', 'vm int qu range', 'y spec peak pos 1', 'x autocorrelation', 'z spec peak pos 6', 'z min', 'x int qu range', 'x spec power band 1', 'z sig mag area', 'x spec peak pos 2', 'z std'}
 Number of quasi-constant features:
 7
 Quasi-constant feature list:
-{'x spec power band 4', 'vm spec power band 1', 'y spec peak pos 6', 'y spec power band 4', 'x spec power band 3', 'z spec power band 3', 'z spec power band 4'}
+{'y spec power band 4', 'x spec power band 4', 'x spec power band 3', 'z spec power band 3', 'vm spec power band 1', 'y spec peak pos 6', 'z spec power band 4'}
 Prediction features:
-Index(['x mean', 'y mean', 'z mean', 'vm mean', 'x std', 'y std', 'y max',
-       'z max', 'vm max', 'x min', 'x spec peak freq 1', 'x spec peak freq 2',
-       'x spec peak freq 3', 'x spec peak freq 4', 'x spec peak freq 5',
-       'x spec peak freq 6', 'y spec peak freq 1', 'y spec peak freq 2',
-       'y spec peak freq 3', 'y spec peak freq 4', 'y spec peak freq 5',
-       'y spec peak freq 6', 'z spec peak freq 1', 'z spec peak freq 2',
-       'z spec peak freq 3', 'z spec peak freq 4', 'z spec peak freq 5',
-       'z spec peak freq 6', 'vm spec peak freq 1', 'vm spec peak freq 2',
-       'vm spec peak freq 3', 'vm spec peak freq 4', 'vm spec peak freq 5',
-       'vm spec peak freq 6'],
+Index(['x mean', 'y mean', 'z mean', 'vm mean', 'x std', 'x max', 'y max',
+       'z max', 'vm max', 'x min', 'y min', 'x spec peak freq 1',
+       'x spec peak freq 2', 'x spec peak freq 3', 'x spec peak freq 4',
+       'x spec peak freq 5', 'x spec peak freq 6', 'y spec peak freq 1',
+       'y spec peak freq 2', 'y spec peak freq 3', 'y spec peak freq 4',
+       'y spec peak freq 5', 'y spec peak freq 6', 'z spec peak freq 1',
+       'z spec peak freq 2', 'z spec peak freq 3', 'z spec peak freq 4',
+       'z spec peak freq 5', 'z spec peak freq 6', 'vm spec peak freq 1',
+       'vm spec peak freq 2', 'vm spec peak freq 3', 'vm spec peak freq 4',
+       'vm spec peak freq 5', 'vm spec peak freq 6'],
       dtype='object')
 Train Classes
-{0.0: 4522, 1.0: 4522, 2.0: 4522, 3.0: 4522}
+{0.0: 20327, 1.0: 20327, 2.0: 20327, 3.0: 20327}
 --------------
