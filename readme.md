@@ -59,10 +59,10 @@ You need these pre-installed on your device to get started.
    ```  
 4. Install Python packages
    ```sh
-   pip install ProsNet
+   pipenv install
    ```
 
-### Usage
+## 🗺️ Exploring The Package
 
 Make sure you completed the installation steps and then run the following command:
 
@@ -76,25 +76,7 @@ python3 examples/shallow_examples/example_1.py
 py examples\shallow_examples\example_1.py
 ```
 
-## 🗺️ Exploring The Package
-
-To get a local copy up and running follow these simple steps.
-
-### Installation
-
-1. Open your terminal/shell and navigate to the directory where you want to install this software
-2. Clone the repo
-   ```sh
-   git clone https://github.com/Ben-Jamin-Griff/ProsNet.git
-   ```
-3. Move into repo
-   ```sh
-   cd ProsNet
-   ```  
-4. Install Python packages
-   ```sh
-   pip install -r requirements.txt
-   ```
+This shows some of the basic functionality of the package. Look through the other examples or dive into the `src` folder to see what's happening under the hood.
 
 ## 🤝 Contributing
 
