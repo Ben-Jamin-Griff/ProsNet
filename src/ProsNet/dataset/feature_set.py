@@ -239,6 +239,4 @@ class FeatureSet(Dataset, Plotter):
             sum(p[mask])
             spower_feats=np.append(spower_feats, sum(p[mask]))
         feature_array=np.append(feature_array, spower_feats)
-
-        # Return the feature array
         return feature_array
