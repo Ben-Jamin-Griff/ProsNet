@@ -44,7 +44,11 @@ Test out the package and start processing data.
 
 You need these pre-installed on your device to get started.
 
-* Python & pip: A useful resource for installing python - [instructions](https://realpython.com/installing-python/)
+* Python: A useful resource for installing python - [instructions](https://realpython.com/installing-python/)
+* Pipenv: A package management tool that automatically creates and manages a virtualenv for your projects, as well as adds/removes packages from your Pipfile as you install/uninstall packages. It also generates the ever-important Pipfile.lock, which is used to produce deterministic builds. This package can be installed using 
+```sh
+pip install pipenv
+```
 
 ### Installation
 
