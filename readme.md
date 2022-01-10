@@ -13,7 +13,7 @@
 
 This respository contains the sotware package and models described in the publication:
 
-*A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (currently under review)*.
+*A Machine Learning Classification Model for Monitoring the Daily Physical Behaviour of Lower-Limb Amputees" (Griffiths et al., 2021)*.
 
 The code works with data export from the activPAL activtiy monitor [palt.com](https://www.palt.com/)
 
